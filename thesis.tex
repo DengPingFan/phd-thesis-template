@@ -11,8 +11,10 @@
 % ******************************* PhD Thesis Template **************************
 % Please have a look at the README.md file for info on how to use the template
 
-\documentclass[a4paper,12pt,times,numbered,print,index]{Classes/PhDThesisPSnPDF}
-
+	
+	
+\documentclass[a4paper,12pt,times,numbered,index,oneside]{Classes/PhDThesisPSnPDF}
+		
 % ******************************************************************************
 % ******************************* Class Options ********************************
 % *********************** See README for more details **************************
@@ -116,6 +118,7 @@
 
 % ******************************** Front Matter ********************************
 \begin{document}
+	
 
 \frontmatter
 
@@ -123,7 +126,10 @@
   \maketitle
 \end{titlepage}
 
+\begin{spacing}{1.5}
 
+%\renewcommand{\cleardoublepage}{}
+	
 \include{Dedication/dedication}
 \include{Declaration/declaration}
 \include{Acknowledgement/acknowledgement}
@@ -132,15 +138,23 @@
 % *********************** Adding TOC and List of Figures ***********************
 
 \tableofcontents
-
 \listoffigures
-
 \listoftables
 
+%\clearpage
+
 % \printnomencl[space] space can be set as 2em between symbol and description
+%\renewcommand\nomname{Abbreviations} 
+% {\clearpage\pagenumbering{roman}\pagestyle{plain}}
+% {\clearpage\pagenumbering{arabic}}
 %\printnomencl[3em]
 
-\printnomencl
+\renewcommand{\thepage}{\roman{page}}
+\renewcommand\nomname{Abbreviations}
+\printnomenclature
+
+
+%\printnomencl
 
 % ******************************** Main Matter *********************************
 \mainmatter
@@ -148,19 +162,16 @@
 \include{Chapter1/chapter1}
 \include{Chapter2/chapter2}
 \include{Chapter3/chapter3}
-%\include{Chapter4/chapter4}
-%\include{Chapter5/chapter5}
-%\include{Chapter6/chapter6}
-%\include{Chapter7/chapter7}
-
-
+\include{Chapter4/chapter4}
+\include{Chapter5/chapter5}
+\include{Chapter6/chapter6}
 
 % ********************************** Back Matter *******************************
 % Backmatter should be commented out, if you are using appendices after References
 %\backmatter
 
 % ********************************** Bibliography ******************************
-\begin{spacing}{0.9}
+%\begin{spacing}{0.9}
 
 % To use the conventional natbib style referencing
 % Bibliography style previews: http://nodonn.tipido.net/bibstyle.php
@@ -179,9 +190,6 @@
 
 %\printbibliography[heading=bibintoc, title={References}]
 
-
-\end{spacing}
-
 % ********************************** Appendices ********************************
 
 \begin{appendices} % Using appendices environment for more functunality
@@ -191,7 +199,21 @@
 
 \end{appendices}
 
+
+\begingroup
+\renewcommand\bibname{Publication List}
+%\input{References/myref.bbl}
+\clearpage
+\input{References/myref_bbl.tex}
+
+\endgroup
+
+
 % *************************************** Index ********************************
+
 \printthesisindex % If index is present
+
+
+\end{spacing}
 
 \end{document}

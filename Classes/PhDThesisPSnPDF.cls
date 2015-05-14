@@ -846,6 +846,10 @@ wish to left align your text}
 \newcommand{\@dept}{}
 \newcommand{\dept}[1]{\renewcommand{\@dept}{#1}}
 
+% The name of your school(eg. Engineering, Maths, Physics)
+\newcommand{\@school}{}
+\newcommand{\school}[1]{\renewcommand{\@school}{#1}}
+
 % The name of your college (eg. King's)
 \newcommand{\@college}{}
 \newcommand{\college}[1]{\renewcommand{\@college}{#1}}
@@ -954,6 +958,8 @@ wish to left align your text}
 
 % Department and University
 {\large \@dept \par}
+\vspace*{1ex}
+{\large \@school \par}
 \vspace*{1ex}
 {\large \@university \par}
 \vspace{.2\PHD@titlepagespacing}
