@@ -13,10 +13,10 @@
 
 \section{Summary}
 
-We made following contributions:
+Recognizing complex has become an important task in computer vision due to various applications. However, this is a challenging task because we have to deal with real videos. The most difficult challenge that need to be handled is unclean video data. This property of internet videos often harm the performance of detection systems that was built on action recognition techniques. This thesis has been investigating on this challenging problem. To this end, we made following contributions:
 
 \begin{itemize}
-	\item We propose using a segment-based approach to overcome the limitations of  the video-based approaches. The basic idea is to examine shorter segments instead of using the representative frames or entire video. We carry thorough experiments to verify our proposed method by investigating different strategies to decompose a video into segments. These strategies include uniform segment sampling and 
+	\item We propose using a segment-based approach to overcome the limitations of  the video-based approaches. The basic idea is to examine shorter segments instead of using the representative frames or entire video. We carry thorough experiments to verify our proposed method by investigating different strategies to decompose a video into segments. These strategies include uniform segment sampling and segments based on shot boundary detection.
 	
 	\item We propose a new video pooling strategy, called sum-max video pooling, to deal with noisy information in complex videos. This pooling technique is based on the layer structure of video. Basically, we apply sum pooling at the low layer representation while using max pooling at the high layer representation. Sum pooling is used to keep sufficient relevant features at the low layer, while max pooling is used to retrieve the most relevant features at the high layer, therefore it can discard irrelevant features in the final video representation. 
 	
@@ -25,4 +25,8 @@ We made following contributions:
 \end{itemize}
 	
 \section{Future Work}
-
+We plan to extend our work in following directions.
+\begin{itemize}
+	\item Learning the relationship between segments. Currently, we can learn a set of important segments that can be used for event detection. We have not imposed any constraints on the relation between segments. However, some spatial-temporal relationship might be important to identify an event. For example, in the event ``changing a vehicle tire'', the action ``removing hubcap'' should take place before the action ``replacing tire''. Or in the event ``flash mob gathering'', the ``gathering'' action should happen before the ``dancing'' action takes place. Moreover, some actions can have a co-occurrence relationship. For example, in the ``birthday party'' event, people can be both singing and dancing. 
+	\item Learning the importance of each concept in the concept bank for event detection. Currently we only detect a set of concepts that can be used to provide evidences to detect an event. These concepts are obtained from NLP techniques. However, we do not know if it really visually represents for that event. It is interesting know which concepts that both textually and visually represent for an event.
+\end{itemize}

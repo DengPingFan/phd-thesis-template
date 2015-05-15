@@ -111,6 +111,10 @@ For local features, we use the popular SIFT with both Hessian-Laplace interest p
 \subsection{Motion features}
 As shown by Wang et al. \cite{wang2013action}, the dense trajectory feature is one of the best for action classification. In particular, it is an efficient way to remove camera motion. Violent scenes of Hollywood movies tend to have a lot of action and different effects. We use the dense trajectory feature to capture this information. Trajectories are obtained by tracking densely sampled points in the optical flow fields. As suggested by Wang \cite{wang2013action}, we use Histogram of Oriented Gradient (HOG), Histogram of Optical Flow (HOF) and Motion Boundary Histogram (MBH) to describe each trajectory. HOG captures the appearance of a moving object, whereas HOF captures its speed. The last descriptor, MBH, captures the boundaries of motion and is good for handling camera motion.
 
+\nomenclature[-hog]{HOG}{Histogram of Oriented Gradient}
+\nomenclature[-hof]{HOF}{Histogram of Optical Flow}
+\nomenclature[-mbh]{MBH}{Motion Boundary Histogram}
+
 \subsection{Audio features}
 We use the popular Mel-frequency Cepstral Coeffcients (MFCC) \cite{rabiner2007introduction} for extracting audio features. We set the window to 25 ms and the step size to 10 ms. 13-dimensional MFCC vectors along with their first and second derivatives are used for representing each audio segment. Raw MFCC features are also encoded using BoW. Note that this configuration was used by the winning teams (AXES/LEAR) of the TRECVID Multimedia Event Detection 2013 \cite{aly2013axes} and THUMOS Challenge 2014 \cite{oneata2014lear}.
 
@@ -119,7 +123,7 @@ We investigated several ways to extract MFCC features from audio channel. These 
 
 \section{Feature encodings}
 \subsection{Bag-of-word model}
-As for local features, we use the popular bag-of-words (BOW) model to generate a fixed-length representation from local descriptors. This model was initially used to represent text documents \cite{harris1954distributional}, and it was first used to represent images by Csurka et al. \cite{csurka2004visual}. Its extension to motion and audio features is straightforward \cite{sivic2009efficient} and \cite{jiang2010columbia}.
+As for local features, we use the popular Bag-of-Words (BOW) model to generate a fixed-length representation from local descriptors. This model was initially used to represent text documents \cite{harris1954distributional}, and it was first used to represent images by Csurka et al. \cite{csurka2004visual}. Its extension to motion and audio features is straightforward \cite{sivic2009efficient} and \cite{jiang2010columbia}.
 
 We used the experiment setup described in \cite{jiang2010representations} to make our bag-of-words models. We set the codebook size to 1,000, because in \cite{jiang2010representations}, performance did not significantly improve when the larger codebooks were used, and a smaller codebook can significantly reduce the computational time for feature encoding as well as feature learning. In order to train the codebook, we randomly selected 1M local descriptors and clustered them using the K-means algorithm. The local descriptors were assigned to each codeword in a soft-weighting manner \cite{jiang2007towards} to improve the discriminative power of the encoded feature.
 
@@ -128,9 +132,14 @@ The main drawback of the bag-of-words model is that it does not incorporate spat
 \subsection{Fisher vector encoding}
 The Fisher vector (FV) was first used for image classification in \cite{jaakkola1999exploiting}. It has since been used for action recognition, such as in \cite{sun2013large} and \cite{wang2013action}. Fisher vector encoding can be considered to be an extension of Bag-of-words encoding. Unlike a bag of features, the Fisher vector encodes both first- and second-order statistics between the local descriptors and the codebook. As a result, it is much longer than the BoW feature when using the same codebook. 
 
-Different from bag-of-words encoding, which often uses k-means to train the codebook, the Fisher vector often uses the Gaussian mixture model (GMM) to encode the relative position of each local descriptor to each mixture center. The relatively large expressiveness of the Fisher vector means it can achieve comparable performance to that of BoW while using a much smaller codebook \cite{sanchez2013image}, \cite{sun2013large}. The pipeline of our Fisher vector framework is shown in Fig. \ref{fig:fv_encoding}.
+Different from bag-of-words encoding, which often uses k-means to train the codebook, the Fisher vector often uses the Gaussian Mixture Model (GMM) to encode the relative position of each local descriptor to each mixture center. The relatively large expressiveness of the Fisher vector means it can achieve comparable performance to that of BoW while using a much smaller codebook \cite{sanchez2013image}, \cite{sun2013large}. The pipeline of our Fisher vector framework is shown in Fig. \ref{fig:fv_encoding}.
 
-In our experiment, we set the number of Gaussians in the GMM model to K = 256. Then we randomly selected 1,000,000 local descriptors for training the model. As suggested in \cite{perronnin2010improving}, it is better to reduce the local feature dimension by using principal component analysis (PCA). The normalization of the output feature is also very important. Following the recommendation in \cite{perronnin2010improving}, we applied power normalization with $\alpha=0.5$ followed by L2-normalization to the Fisher vector.
+In our experiment, we set the number of Gaussians in the GMM model to K = 256. Then we randomly selected 1,000,000 local descriptors for training the model. As suggested in \cite{perronnin2010improving}, it is better to reduce the local feature dimension by using Principal Component Analysis (PCA). The normalization of the output feature is also very important. Following the recommendation in \cite{perronnin2010improving}, we applied power normalization with $\alpha=0.5$ followed by L2-normalization to the Fisher vector.
+
+\nomenclature[-fv]{FV}{Fisher Vector}
+\nomenclature[-pca]{PCA}{Principal Component Analysis}
+\nomenclature[-gmm]{GMM}{Gaussian Mixture Model}
+\nomenclature[-bow]{BOW}{Bag-of-Words}
 
 \section{General framework}
 \begin{figure}
