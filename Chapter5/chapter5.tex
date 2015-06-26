@@ -22,23 +22,24 @@ The problem of recognizing complex event in videos has become a popular research
 	\label{figure_1}
 \end{figure}
 
-In practice, human can recognize a complex event by spotting several evidences in video \cite{bhattacharya2014minimally}. This paper also demonstrated that better performance can be obtained by leveraging positive and negative visual cues selected by humans. Therefore, it is important to automatically detect key evidences for event detection. Several researchers have been working on this direction. Tang \textit{et al.} \cite{tang2012learning} split the video into segments and models key segments and its duration as latent variables. Vahdat \textit{et al.} \cite{vahdat2013compositional} focus on intra-class variation by localizing only the most salient evidence using latent SVM. 
-Lai \textit{et al.} \cite{lai2014video} detect salient instances in video based on a variant multiple instance learning. In another work \cite{lai2014recognizing}, they represent static and dynamic instances as sparse features and adopt a learning-to-rank strategy to detect key evidence. In general, these approaches are based on the assumption that segment annotation can be obtained from its video label. However, this is a weak assumption because the importance of each segment is not taken into account. 
+In practice, human \index{human} can recognize a complex event by spotting several evidences in video \cite{bhattacharya2014minimally}. This paper also demonstrated that better performance can be obtained by leveraging positive and negative visual cues selected by humans. Therefore, it is important to automatically detect key evidences for event detection. Several researchers have been working on this direction. Tang \textit{et al.} \cite{tang2012learning} split the video into segments and models key segments and its duration as latent variables. Vahdat \textit{et al.} \cite{vahdat2013compositional} focus on intra-class variation by localizing only the most salient evidence using latent SVM. \index{latent SVM}
+Lai \textit{et al.} \cite{lai2014video} detect salient instances in video based on a variant multiple instance learning \index{multiple instance learning}. In another work \cite{lai2014recognizing}, they represent static and dynamic instances as sparse features and adopt a learning-to-rank strategy to detect key evidence. In general, these approaches are based on the assumption that segment annotation can be obtained from its video label. However, this is a weak assumption because the importance of each segment is not taken into account. 
 
-On the other hand, the importance of a segment to an event can be obtained by matching its concept-based representation against the evidential description of that event. Some works have been using the event description for zero-shot event detection such as in \cite{chen2014event,wu2014zero}. To the best of our knowledge, no work has taken into account this information for detecting key evidence in videos. However, the evidential description of an event provides valuable information to detect that event. Example of an event description (excerpted) is shown in Fig. \ref{figure_1}. 
+On the other hand, the importance of a segment to an event can be obtained by matching its concept-based representation against the evidential description \index{evidential description} of that event. Some works have been using the event description for zero-shot event detection such as in \cite{chen2014event,wu2014zero}. To the best of our knowledge, no work has taken into account this information for detecting key evidence in videos. However, the evidential description of an event provides valuable information to detect that event. Example of an event description (excerpted) is shown in Fig. \ref{figure_1}. 
 
 Motivated by this observation, we propose a new method, Event-driven Multiple Instance Learning (EDMIL), to learn key evidences for complex event detection. We treat each segment as an instance and model it in a multiple instance learning framework \cite{andrews2002support}, where each video is a "bag". The instance-event similarity is quantized into different levels of relatedness. Intuitively, the most (ir)relevant instances should have higher (dis)similarities. Therefore, we propose to learn the instance labels by jointly optimize the instance classifier and its related level. We evaluate our proposed method on the large scale TRECVID MED 2012 dataset. Comparing to other instance-based learning methods such as \cite{andrews2002support,lai2014video}, our method achieves a superior performance.
 
-The remaining of this paper is organized as follows. In the next section, we present the method to calculate the instance-event similarity. Our proposed solution is introduced in Section \ref{method}. The experiments and results are shown in Section \ref{experiment}. Finally, Section \ref{conclusion} concludes the paper.
+The remaining of this chapter is organized as follows. In the next section, we present the method to calculate the instance-event similarity. Our proposed solution is introduced in Section \ref{method}. The experiments and results are shown in Section \ref{experiment}. Finally, Section \ref{conclusion} concludes this work.
+\index{instance-event similarity}
 
 \section{Instance-Event Similarity}
 In order to calculate the similarity between an instance and an event, we adopt a concept expansion strategy as in \cite{chen2014event}. Our method is similar in spirit, however, we apply at instance level which is more accurate. The outline of our method is illustrated in Fig. \ref{figure_2} and it consists of four steps.
 
-\textbf{Step 1: Concept detection.} We use the concept collection that proposed in \cite{zhou2014places} to cover a wide range of concept that can appear in realistic videos. This collection contains C = 1183 categories including 205 scene categories from the Places Database and 978 object categories from the ImageNet 2012. The concept detection part is done by using the provided pre-trained model\footnote{http://places.csail.mit.edu}. To detect concept for the whole segment, we detect concept at sample frames and make the average aggregation.
+\textbf{Step 1: Concept detection.} We use the concept collection that proposed in \cite{zhou2014places} to cover a wide range of concept that can appear in realistic videos. This collection contains C = 1183 categories including 205 scene categories from the Places Database\cite{zhou2014learning} and 978 object categories from the ImageNet 2012\cite{deng2009imagenet}. The concept detection part is done by using the provided pre-trained model\footnote{http://places.csail.mit.edu}. To detect concept for the whole segment, we detect concept at sample frames and make the average aggregation. \index{concept detection} \index{imagenet} \index{places database}
 
-\textbf{Step 2: Event representation.} We use standard natural language processing techniques to create the text-based event representation. At first, the event description is pre-processed by removing stop words and lemmatizing. It is then converted into a bag-of-words representation, where the dictionary is obtained from the English Wikipedia corpus. Tf-idf weighting scheme is also employed to put a higher weight on frequent as well as rare words.
+\textbf{Step 2: Event representation.} We use standard natural language processing techniques to create the text-based event representation. At first, the event description is pre-processed by removing stop words and lemmatizing. It is then converted into a bag-of-words representation, where the dictionary is obtained from the English Wikipedia corpus. Tf-idf weighting scheme is also employed to put a higher weight on frequent as well as rare words.\index{event representation} \index{tf-idf} \index{lemmatization} \index{wikipedia}
 
-\textbf{Step 3: Concept-event similarity.} To resolve the mismatch between words in the concept collection and event description, we adopt the concept expansion strategy \cite{chen2014event}. For each concept category, we add the 10 most similar concepts obtained from word2vec model\footnote{https://code.google.com/p/word2vec} to expand this category. It is then represented by a bag-of-words vector with tf-idf weights. Based on this representation, we can calculate the cosine similarity $s_{c}^{e}$ between each concept category and the event description. Table \ref{table1} shows top five most relevant concepts for some events on the MED 2012 dataset. 
+\textbf{Step 3: Concept-event similarity.} To resolve the mismatch between words in the concept collection and event description, we adopt the concept expansion strategy \cite{chen2014event}. For each concept category, we add the 10 most similar concepts obtained from word2vec\cite{mikolov2013efficient} model\footnote{https://code.google.com/p/word2vec} to expand this category. It is then represented by a bag-of-words vector with tf-idf weights. Based on this representation, we can calculate the cosine similarity $s_{c}^{e}$ between each concept category and the event description. Table \ref{table1} shows top five most relevant concepts for some events on the MED 2012 dataset. \index{work2vec} \index{tf-idf} 
 
 \textbf{Step 4: Instance-event similarity.} Having obtained the concept score $x_{c}$ at each segment and the concept-event similarity as in Step 1 and Step 3, the instance-event similarity is calculated using the cosine similarity:
 \begin{equation}
@@ -107,7 +108,7 @@ P_{neg}(S_{iv}^{e},r) =
 1,              & \text{otherwise}
 \end{cases}\text{, }
 \end{equation}
-where $Rank(.)$ is the function to quantize a similarity into a related level. Note that smaller value of $r$ results a higher confidence in the predict functions. We now learn the parameters of the instance classifier jointly with the related level $r$ by optimizing the following objective function:
+where $Rank(.)$ is the function to quantize a similarity into a related level. Note that smaller value of $r$ results a higher confidence in the predict functions. We now learn the parameters of the instance classifier jointly with the related level $r$ by optimizing the following objective function: \index{instance classifier}
 \label{method}
 \begin{equation}
 \label{eq4}
@@ -116,7 +117,7 @@ where $Rank(.)$ is the function to quantize a similarity into a related level. N
 + C_{p} \sum_{v=1}^{V}\sum_{i=1}^{I_{v}}L_{p}\left ( y_{iv}, P(S_{iv}^{e},r) \right ).
 \end{split}
 \end{equation}
-$C_{f}$ and $C_{p}$ are cost parameters to control the influence of each loss function. Note that in the special case where $C_{p}=0$, the above formulation becomes a classic large-margin problem. $L_{f}(.)$ and $L_{p}(.)$ are two loss functions that will be jointly minimized. The first loss function minimizes the loss due to the classification mismatch based on the instance feature. The second one minimizes the loss due to the prediction obtained from the prior knowledge. Intuitively, when the related level $r$ increases, the first loss will also tend to increase while the second loss will become smaller, and vice versa. $L_{f}(.)$ and $L_{p}(.)$ can be any loss function. Throughout this paper, we use the standard hinge-loss function for $L_{f}(.)$:
+$C_{f}$ and $C_{p}$ are cost parameters to control the influence of each loss function. Note that in the special case where $C_{p}=0$, the above formulation becomes a classic large-margin problem. $L_{f}(.)$ and $L_{p}(.)$ are two loss functions that will be jointly minimized. The first loss function minimizes the loss due to the classification mismatch based on the instance feature. The second one minimizes the loss due to the prediction obtained from the prior knowledge. Intuitively, when the related level $r$ increases, the first loss will also tend to increase while the second loss will become smaller, and vice versa. $L_{f}(.)$ and $L_{p}(.)$ can be any loss function. Throughout this work, we use the standard hinge-loss function for $L_{f}(.)$: \index{hinge-loss function}
 $L_{f}\left ( y_{iv},\textbf{w}^{T}\textbf{x}_{iv}+b \right )=\text{max}(0,1-y_{iv}(\textbf{w}^{T}\textbf{x}_{iv}+b)),$
 and the $L_{p}(.)$ function is defined so that it will penalize more on the high confident predictions:
 
@@ -126,7 +127,7 @@ S_{iv}^{e},& \text{if } P(S_{iv}^{e},r) \neq y_{iv} \\
 0,              & \text{otherwise}
 \end{cases}.$
 
-\subsection{Optimization Procedure}
+\subsection{Optimization Procedure} \index{optimization}
 The optimization problem in Eq. (\ref{eq4}) is a mixed-integer program which is not convex. In order to solve this problem, we apply the alternating optimization strategy to search for a suboptimal solution:
 \begin{enumerate}
 	\item{} Fix instance labels $y_{iv}$ and solve for \textbf{w} and \textit{b}. By fixing $y_{iv}$, the optimization problem becomes a classic SVM:
@@ -147,11 +148,11 @@ The optimization problem in Eq. (\ref{eq4}) is a mixed-integer program which is 
 	%+ C_{p} \sum_{v=1}^{V}\sum_{i=1}^{I_{m}}L_{p}\left ( y_{iv}, %P(S_{iv}^{e},r) \right ).
 	%\end{split}
 	%\end{equation}
-	We propose a greedy strategy to solve for this problem. At first, we iterate through all level of relatedness to search for the optimal $r$ by finding the minimum total loss when updating $y_{iv}$ using Eq. (\ref{eq2}, \ref{eq3}). Because the most positive and negative instances will be selected first, there will be a higher possibility to correct mismatched labels that were learned in the previous step. Lastly we update instance labels using Eq. (\ref{eq2}, \ref{eq3}) with the optimal $r$.
+	We propose a greedy strategy to solve for this problem. At first, we iterate through all level of relatedness to search for the optimal $r$ by finding the minimum total loss when updating $y_{iv}$ using Eq. (\ref{eq2}, \ref{eq3}). Because the most positive and negative instances will be selected first, there will be a higher possibility to correct mismatched labels that were learned in the previous step. Lastly we update instance labels using Eq. (\ref{eq2}, \ref{eq3}) with the optimal $r$. \index{greedy strategy}
 	
 \end{enumerate}
 
-Because this is not a convex optimization problem, the initialized values of $y_{iv}$ should be carefully selected. To this end, we use the same initilization method as in \cite{andrews2002support,lai2014video}, where instance labels are same with its "bag" (video) label. 
+Because this is not a convex optimization problem, the initialized values of $y_{iv}$ should be carefully selected. To this end, we use the same initilization method as in \cite{andrews2002support,lai2014video}, where instance labels are same with its "bag" (video) label. \index{convex optimization}
 
 It is also worth noted that the optimization framework only keeps updating the instance labels while the instance features are unchanged. Thus it is a good practice to use the pre-computed kernel technique for optimizing \textbf{w} and \textit{b}. In fact, although our method is more complex, it only takes around 5 minutes for training one model, compared to 40 minutes that was reported in \cite{lai2014video}. 
 \section{Experiments}
@@ -167,6 +168,15 @@ It is also worth noted that the optimization framework only keeps updating the i
 \end{figure}
 
 
+\subsection{Baseline methods} To compare our methods with following baselines: miSVM, MISVM \cite{andrews2002support}, VideoBOW and pSVM \cite{lai2014video}. At first, because our method is based on the Multiple Instance Learning (MIL) framework, we evaluate two MIL solutions: miSVM and MISVM that were proposed by the authors in \cite{andrews2002support}. The VideoBOW method is the standard approach where local features are aggregated from the whole video. We also compare our method with the recently proposed pSVM which was adopted in \cite{lai2014video} for TRECVID MED. For all the baseline methods, except VideoBOW, we utilize the codes provided by the authors to test with our features.
+
+
+\subsection{Experimental results}
+At first, we conduct experiments to find the optimal value of R. We select R in the range from 1 to 10. The overall performance is shown in Fig. \ref{figure_3}. We obtain the peak performance with R around 5. Small values of R tend to get low performances. This indicates that the prediction of prior knowledge is not always good, and learning jointly with instance features is necessary. The performance becomes saturated when R > 5. Therefore, we fix the value of R to 5 for further experiments.
+
+\subsubsection{On The MED 2012 dataset}
+The performance of each baseline method as well as our method (EDMIL) are shown in Fig. \ref{figure_4}. Our method significantly outperforms other baselines. For the best baseline, our method relatively outperforms by 10\%. Our instance-based classifier can also provide key evidences for event detection. Example of true positive and false positive key evidences detected by our system can be seen in Fig. \ref{figure_5} and Fig. \ref{figure_6} respectively. 
+
 \begin{figure*}
 	\centering
 	\includegraphics[width=1\textwidth]{figure_4.pdf}
@@ -174,20 +184,44 @@ It is also worth noted that the optimization framework only keeps updating the i
 	\label{figure_4}
 \end{figure*}
 
-\subsection{Baseline methods} To compare our methods with following baselines: miSVM, MISVM \cite{andrews2002support}, VideoBOW and pSVM \cite{lai2014video}. At first, because our method is based on the Multiple Instance Learning (MIL) framework, we evaluate two MIL solutions: miSVM and MISVM that were proposed by the authors in \cite{andrews2002support}. The VideoBOW method is the standard approach where local features are aggregated from the whole video. We also compare our method with the recently proposed pSVM which was adopted in \cite{lai2014video} for TRECVID MED. For all the baseline methods, except VideoBOW, we utilize the codes provided by the authors to test with our features.
-
-
-\subsection{Experimental results}
-At first, we conduct experiments to find the optimal value of R. We select R in the range from 1 to 10. The overall performance is shown in Fig. \ref{figure_3}. We obtain the peak performance with R around 5. Small values of R tend to get low performances. This indicates that the prediction of prior knowledge is not always good, and learning jointly with instance features is necessary. The performance becomes saturated when R > 5. Therefore, we fix the value of R to 5 for further experiments.
-
-The performance of each baseline method as well as our method (EDMIL) are shown in Fig. \ref{figure_4}. Our method significantly outperforms other baselines. For the best baseline, our method relatively outperforms by 10\%. Our instance-based classifier can also provide key evidences for event detection. Example of key evidences detected by our system can be seen in Fig. \ref{figure_5}. 
-\label{experiment}
+\subsubsection{On The MED 2011 dataset}
+For the MED 2011 dataset, we also compare our proposed method with our two previous works: Segment-based Representation (SB) and Sum-Max Video Pooling (SM) at segment length of 8 s. The results are shown in Fig. \ref{med11_sum}.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=1\textwidth]{figure_5.pdf}
+	\includegraphics[width=1\textwidth]{med11_sum.png}
+	\caption{Evaluation results of 10 events in the TRECVID MED 2011 dataset using average aggregation. The mean APs are 0.0378 (miSVM), 0.0322 (MISVM), 0.0674 (VideoBOW), 0.0666 (pSVM), 0.0663 (SM8), 0.0630 (SB8), \textbf{0.0761} (\textbf{Ours}).}
+	\label{med11_sum}
+\end{figure}
+
+Our proposed EDMIL approach achieves the best performance while p-SVM only has a comparable performance with the VideoBOW. Our segment-based approach (SB) does not perform well. The reason is that we used the average aggregation over all segments of the video at the testing step. We further conduct experiment with a new testing strategy: choose the max segment score as the video score. The result of this experiment is shown on Fig. \ref{med11_max}. The max aggregation strategy performs better than the average aggregation by a margin. The performance gain can be seen in Fig. \ref{med11_gain}. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{med11_max.png}
+	\caption{Evaluation results of 10 events in the TRECVID MED 2011 dataset using max aggregation. The mean APs are 0.0640 (miSVM), 0.0564 (MISVM), 0.0674 (VideoBOW), 0.0870 (pSVM), 0.0663 (SM8), 0.0770 (SB8), \textbf{0.0968} (\textbf{Ours}).}
+	\label{med11_max}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{med11_gain.png}
 	\caption{The top 6 key evidences detected by our system for the event "Attempting board trick". The dominance of ski-related instances is reasonable.}
+	\label{med11_gain}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{parkour.jpg}
+	\caption{The top 16 key evidences detected by our system for the event "Parkour".}
 	\label{figure_5}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{parkour_neg.jpg}
+	\caption{The top 16 key false positive evidences detected by our system for the event "Parkour".}
+	\label{figure_6}
 \end{figure}
 
 \section{Conclusions}

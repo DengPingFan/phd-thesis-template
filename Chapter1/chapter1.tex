@@ -22,7 +22,7 @@ Event recognition technologies are mainly employed in \index{video retrieval} vi
 \begin{itemize}
 	\item \textbf{Video search.}\index{video search} This is an important function in most of video sharing websites. Most of the time, these websites only provide a search interface that supports text queries. However, in order to do that, videos must have already been indexed based on its content and other metadata. Using the provided interface, user can search for a specific tutorial such as ``how to make a cake'',  ``how to repair an appliance''; or some specific entertainment videos such as "a dog show" and "doing a magic trick".
 	\item \textbf{Video recommendation.}\index{video recommendation} It is also very important for video sharing websites to recommend videos that may appeal to the user. The longer the user stay on their websites, the higher the benefit. The recommendation is often based on the user's favorite videos or recently watched videos. From these input videos, the system will search for similar videos through their database within a short time. For example, when the user watch a video of ``how to drive a car'', they may also expected to watch similar events such as ``how to park a car'' and ``common driving mistakes''.
-	\item \textbf{Video filtering.}\index{video filtering} In contrast to video recommendation, video filtering is also an important application of event detection technologies. There are certain event that the managers do not want them to be public, especially when a government want to establish a video censorship \index{video censorship}. For example, videos that teach ``how to make a bomb'' or ``how to commit a suicide'' should be removed from the retrieval results. 
+	\item \textbf{Video filtering.} In contrast to video recommendation, video filtering is also an important application of event detection technologies. There are certain event that the managers do not want them to be public, especially when a government want to establish a video censorship. For example, videos that teach ``how to make a bomb'' or ``how to commit a suicide'' should be removed from the retrieval results. 
 
 	Zillmann and Weaver \cite{JASP:JASP145} show that human tend to have violent responses when watching violent movies. In this case, event detection technology can be applied to filter out violent scenes \index{violent scene detection} in a movies. This technology has been employed in Facebook platform \cite{Internet3} to prevent the spread of a particular videos from over the internet. A video footage of a policeman being shot dead in the ``Charlie Hebdo shooting'' incident was among the first posts that were restricted by Facebook \cite{Internet3}. 
 	
@@ -47,7 +47,7 @@ Due to the uncontrolled capturing condition of the complex videos, it is also in
 	\item{\textbf{Large content variation.}} The large content variation refers to the diversity of a complex event. Even though an event only involve with some specific objects, activities and scenes, the variety among within these classes is also very high. For example, "birthday party" is a complex event. This event can be happen during day or night and set in indoor (a home, a restaurant) or outdoor (a backyard, a park) environment. Typically, in a birthday party, the presence of a birthday cake is of the utmost importance. However, in the real world setting, even the birthday cake can be very different from video to video. Figure \ref{c1_largecontent} shows some examples of birthday cake appear in internet videos. 
 	\begin{figure}
 		\centering
-		\includegraphics[width=1\textwidth]{largecontent.pdf}
+		\includegraphics[width=1\textwidth]{largecontent.png}
 		\caption{The large variation of birthday cake in the birthday party event.}
 		\label{c1_largecontent}
 	\end{figure}
@@ -60,7 +60,7 @@ Due to the uncontrolled capturing condition of the complex videos, it is also in
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=1\textwidth]{teaser_image.eps}
+		\includegraphics[width=1\textwidth]{teaser_image.png}
 		\caption{(a) Example video for ``making a sandwich'' event: the related segment appears after a self-cam segment (unrelated); (b) example video for ``grooming an animal'' event: related segment is sandwiched between two unrelated segments. This kind of video is popular in realistic video datasets like MED. The frames with a red outlined box are examples of the extracted keyframes when using a keyframe-based approach, which suffers from both noise and missed extraction.}
 		\label{c1_uncontrolled}
 	\end{figure}
@@ -69,7 +69,7 @@ Due to the uncontrolled capturing condition of the complex videos, it is also in
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width=1\textwidth]{near_miss.pdf}
+		\includegraphics[width=1\textwidth]{near_miss.png}
 		\caption{Example of near-miss video for ``Changing a vehicle tire'' event. The first row shows some positive videos. The second row shows near-miss videos, which is very easy to be confused with positive ones, even for human.}
 		\label{c1_nearmiss}
 	\end{figure}
@@ -109,8 +109,13 @@ Chapter \ref{chapter6} concludes this dissertation by summarizing our contributi
 
 	\begin{figure}
 		\centering
-		\includegraphics[width=1\textwidth]{outline.pdf}
+		\includegraphics[width=1\textwidth]{outline.png}
 		\caption{Outline of our thesis. Our contributions are highlighted in red boxes.}
 		\label{c1_outline}
 	\end{figure}
 	
+\nomenclature[-sb]{SB}{Segment-based}
+\nomenclature[-sm]{SM}{Sum-Max Video Pooling}
+\nomenclature[-map]{MAP}{Mean Average Precision}
+\nomenclature[-map]{SBD}{Shot Boundary Detection}
+

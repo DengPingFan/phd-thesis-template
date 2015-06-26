@@ -15,8 +15,9 @@
 \section{Introduction}
 \label{sec:intro}
 
-The problem of aggregating low level representation into a higher level one has been well studied for image representation. Basically there are two main strategies to aggregate local image descriptors: sum pooling \cite{Koenderink:1999} and max pooling \cite{Serre05objectrecognition}. To understand about these pooling strategies, it is better to mention them in the context of bag-of-word model \cite{Csurka04visualcategorization}. In this model, at first a dictionary or codebook with around thousands of codewords is trained using an unsupervised method such as K-means or Approximate K-means. After that, local features, which are often extracted using a standard SIFT \cite{Lowe:2004} feature, are quantized into the codebook based on their distances to the nearest codewords. Finally, features that are assigned to a codeword are pooled to get a representative value for that codeword. The sum pooling technique simply takes a sum over responses to a visual word. This technique is useful when most of the features are relevant. On the other hand, the max pooling technique only select the largest value between features responding to a visual word. This technique only useful when at least one local feature is sufficiently discriminative. In this case, most of the remaining features can be irrelevant.
+The problem of aggregating low level representation into a higher level one has been well studied for image representation. Basically there are two main strategies to aggregate local image descriptors: sum pooling \cite{Koenderink:1999} and max pooling \cite{Serre05objectrecognition}. To understand about these pooling strategies, it is better to mention them in the context of bag-of-word model \cite{Csurka04visualcategorization}. In this model, at first a dictionary or codebook with around thousands of codewords is trained using an unsupervised method such as K-means or Approximate K-means. After that, local features, which are often extracted using a standard SIFT \cite{Lowe:2004} feature, are quantized into the codebook based on their distances to the nearest codewords. Finally, features that are assigned to a codeword are pooled to get a representative value for that codeword. The sum pooling technique simply takes a sum over responses to a visual word. This technique is useful when most of the features are relevant. On the other hand, the max pooling technique only select the largest value between features responding to a visual word. This technique only useful when at least one local feature is sufficiently discriminative. In this case, most of the remaining features can be irrelevant. \index{k-means}
 
+\index{sum pooling} \index{max pooling} 
 Sum pooling and max pooling techniques can be easily adopted for video representation. In this case, we can treat spatial-temporal local features in video as local features in image and apply the same framework. State of art performance can be obtained using bag-of-words model with the sum pooling technique in simple video classification/recognition tasks such as sports action videos \cite{Rodriguez2008} or studio setting movies \cite{marszalek09}. This is due to the fact that discriminative features exist in the entire video in these datasets. However, this observation is not true on complex video datasets where the discriminative features may exist within a small part of the video. One example of these datasets is the TRECVID Multimedia Event Detection (MED) dataset\footnote{http://www.nist.gov/itl/iad/mig/med10.cfm}, where most videos are captured by internet users and it tends to be noisy. Example of such noisy video is shown in Fig \ref{f_teaser}. In this case, video pooling for event recognition is much more challenging.
 \begin{figure}
 	\centering
@@ -25,13 +26,13 @@ Sum pooling and max pooling techniques can be easily adopted for video represent
 	\label{f_teaser}
 \end{figure}
 
-We are interested in the problem of video pooling for a more robust video representation. We consider a video as a layered structure where the lowest layer are frames, the top layer is the entire video, and the middle layers are the sequences of consecutive frames or the concatenation of lower layers. Based on this layered structure of video, we propose to use the sum-max video pooling to deal with noisy information in complex videos. Basically, we apply sum pooling at the low layer representation while using max pooling at the high layer representation. Sum pooling is used to keep sufficient relevant features at the low layer, while max pooling is used to retrieve the most relevant features at the high layer, therefore it can discard irrelevant features in the final video representation. 
+We are interested in the problem of video pooling for a more robust video representation. We consider a video as a layered structure where the lowest layer are frames, the top layer is the entire video, and the middle layers are the sequences of consecutive frames or the concatenation of lower layers. Based on this layered structure of video, we propose to use the sum-max video pooling to deal with noisy information in complex videos. Basically, we apply sum pooling at the low layer representation while using max pooling at the high layer representation. Sum pooling is used to keep sufficient relevant features at the low layer, while max pooling is used to retrieve the most relevant features at the high layer, therefore it can discard irrelevant features in the final video representation. \index{video representation}
 
 Our work is most related to \cite{DBLP:journals/vlsisp/PhanNLTLDS14}, in which they proposed a segment-based approach to generate segment level representation using the sum pooling technique. Here we focus on different pooling techniques to generate the video representation. Experimental results on the TRECVID Multimedia Event Detection 2010 dataset shows the effectiveness of our method.
 
-The rest of this paper is organized as follows. Section 2 introduces the layered structure of video. Section 3 presents our sum-max pooling technique based on this layered structure. The experimental setup and experimental results are described in Section 4. Finally, Section 5 concludes the paper with discussions on our future work.
+The rest of this chapter is organized as follows. Section 2 introduces the layered structure of video. Section 3 presents our sum-max pooling technique based on this layered structure. The experimental setup and experimental results are described in Section 4. Finally, Section 5 concludes this chapter with discussions on our future work.
 
-\section{Layered structure of video}
+\section{Layered structure of video} \index{layer structure}
 \label{sec:format}
 As mentioned in the previous section, pooling over the whole video is not effective for complex video representation because these videos can contain irrelevant information. The direct solution to remove these irrelevant information from the final video representation is to pool over the relevant parts only. However, it is also non-trivial to determine which parts of the video are relevant or not. 
 \begin{figure}[!htb]
@@ -41,9 +42,9 @@ As mentioned in the previous section, pooling over the whole video is not effect
 	\label{f_sum_max}
 \end{figure}
 
-The layered structure of video is a simply way to lessen the impact of irrelevant information. We define this layered structure as follows. The lowest layer are the frames of that video. The top layer is the entire video. The middle layers are the sequences of consecutive frames or the concatenation of lower layers. For the sake of simplicity, we only use one middle layer and the frame sequences in the middle layer are referred as segments in the rest of our paper. In implementation, we choose the length of the segments varies in the following range: 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195 and 210 seconds. We report the best segment length in Section 4.
+The layered structure of video is a simply way to lessen the impact of irrelevant information. We define this layered structure as follows. The lowest layer are the frames of that video. The top layer is the entire video. The middle layers are the sequences of consecutive frames or the concatenation of lower layers. For the sake of simplicity, we only use one middle layer and the frame sequences in the middle layer are referred as segments in the rest of this chapter. In implementation, we choose the length of the segments varies in the following range: 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195 and 210 seconds. We report the best segment length in Section 4.
 
-\section{Sum-max video pooling}
+\section{Sum-max video pooling} \index{sum-max video pooling}
 \label{sec:summax}
 \begin{figure}
 	\centering
@@ -91,6 +92,7 @@ In the learning and testing step, we use the popular Support Vector Machine (SVM
 
 \subsection{Experimental Result and Analysis}
 
+\subsubsection{On the MED 2010 dataset}
 We report the results in terms of the Mean Average Precision (MAP). Results of sum-max video pooling and max-sum video pooling are showed in Fig \ref{f_sum_max_chart} and Fig \ref{f_max_sum_chart} respectively. Sum-max pooling improves the overall performance, especially for "assembling a shelter" event. The best performance is obtained at the segment length of 60 s (same as observed in \cite{DBLP:journals/vlsisp/PhanNLTLDS14}). Max-sum video pooling did not achieve good results compared to sum-max video pooling. The reason for the low performance of max-sum pooling can be due to the lost of relevant information when max-pooling is applied first. 
 
 We also observed that the performance largely depends on the segment length and the event itself. For example, we can get better performance with short segment lengths for the event "assembling a shelter", while the event "making a cake" tends to have better performance with longer segments. 
@@ -123,6 +125,26 @@ We summarize our experimental results in Table \ref{t_med10}. The best performin
 		\hline
 	\end{tabular}
 \end{table}
+
+\subsubsection{On the MED 2011 dataset}
+
+In this experiment, we calculate the sum-max video pooling at different segment lengths including 8 s, 16 s, 32 s, 64 s, 128 s and 256 s. Results of our proposed methods on MED 2011 dataset are shown on Fig. \ref{f_med11_summax_kernel} and Fig. \ref{f_med11_summax_linear} respectively. Our best results are obtained at 8 s when using ${\chi}^2$ SVM and 32 s when using linear SVM.
+
+\begin{figure*}[!htb]
+	\centering
+	\includegraphics[width=1\textwidth]{med11_summax_kernel.png}
+	\caption{Results on the MED 2011 dataset using the sum-max pooling technique at different segment lengths (${\chi}^2$ SVM).}
+	\label{f_med11_summax_kernel}
+\end{figure*}
+
+\begin{figure*}[!htb]
+	\centering
+	\includegraphics[width=1\textwidth]{med11_summax_linear.png}
+	\caption{Results on the MED 2011 dataset using the sum-max pooling technique at different segment lengths (linear SVM).}
+	\label{f_med11_summax_linear}
+\end{figure*}
+
+
 \section{Conclusion}
 \label{sec:majhead}
 
