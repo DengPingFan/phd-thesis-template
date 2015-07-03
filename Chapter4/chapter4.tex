@@ -2,7 +2,7 @@
 %****************************** Second Chapter *********************************
 %*******************************************************************************
 
-\chapter{Sum-max Video Pooling for Complex Event Recognition}
+\chapter{Event Detection Using Sum-max Feature Aggregation}
 \label{chapter4}
 \epigraph{\textit{A clay pot sitting in the sun will always be a clay pot. It has to go through the white heat of the furnace to become porcelain.}}{ -- Mildred W. Struven}
 
@@ -32,26 +32,36 @@ Our work is most related to \cite{DBLP:journals/vlsisp/PhanNLTLDS14}, in which t
 
 The rest of this chapter is organized as follows. Section 2 introduces the layered structure of video. Section 3 presents our sum-max pooling technique based on this layered structure. The experimental setup and experimental results are described in Section 4. Finally, Section 5 concludes this chapter with discussions on our future work.
 
-\section{Layered structure of video} \index{layer structure}
+\section{Layered Structure of Video} \index{layer structure}
 \label{sec:format}
 As mentioned in the previous section, pooling over the whole video is not effective for complex video representation because these videos can contain irrelevant information. The direct solution to remove these irrelevant information from the final video representation is to pool over the relevant parts only. However, it is also non-trivial to determine which parts of the video are relevant or not. 
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=1\textwidth]{layered.png}
 	\caption{Illustration of layered structure of video.}
-	\label{f_sum_max}
+	\label{f_layer}
 \end{figure}
 
-The layered structure of video is a simply way to lessen the impact of irrelevant information. We define this layered structure as follows. The lowest layer are the frames of that video. The top layer is the entire video. The middle layers are the sequences of consecutive frames or the concatenation of lower layers. For the sake of simplicity, we only use one middle layer and the frame sequences in the middle layer are referred as segments in the rest of this chapter. In implementation, we choose the length of the segments varies in the following range: 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195 and 210 seconds. We report the best segment length in Section 4.
+The layered structure of video is a simply way to lessen the impact of irrelevant information. We define this layered structure as follows. The lowest layer are the frames of that video. The top layer is the entire video. The middle layers are the sequences of consecutive frames or the concatenation of lower layers. Figure \ref{f_layer} illustrates the layered structure in videos.
 
-\section{Sum-max video pooling} \index{sum-max video pooling}
+For the sake of simplicity, we only use one middle layer and the frame sequences in the middle layer are referred as segments in the rest of this chapter. In implementation, we choose the length of the segments varies in the following range: 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195 and 210 seconds. We report the best segment length in Section \ref{c4_experiment}.
+
+\section{Sum-max Video Pooling} \index{sum-max video pooling}
 \label{sec:summax}
 \begin{figure}
 	\centering
 	\includegraphics[width=1\textwidth]{summax_maxsum.png}
-	\caption{Example of applying sum-max video pooling (top) and max-sum video pooling (bottom) methods on an "assembling a shelter" event video. It can be seen from the top image that after applying max pooling at the segment level, only relevant frames are encoded in the final representation.}
+	\caption{Example of applying sum-max video pooling (top) and max-sum video pooling (bottom) methods on an ``assembling a shelter'' event video. It can be seen from the top image that after applying max pooling at the segment level, only relevant frames are encoded in the final representation.}
 	\label{f_sum_max3}
 \end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{efficient.png}
+	\caption{Features from higher layers can be obtained from lower layers efficiently.}
+	\label{f_efficient}
+\end{figure}
+
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=1\textwidth]{sum_max.png}
@@ -79,23 +89,25 @@ In the context of bag-of-words model, suppose that there are N local descriptors
 
 An intuitive example of sum-max pooling is shown in Fig \ref{f_sum_max}. As we can see, max pooling reserves the relevant information because noisy data tend to be varied, and none of any kind of them is dominant. In the contrast, sum pooling incorporates both relevant and irrelevant ones. Therefore, it is less representative than max pooling.
 
-\section{Experiments}
-\label{sec:typestyle}
+It is also worth noted that features from higher layers can be obtained from lower layers efficiently. In fact, we only need to extract feature one time. An illustration of features calculated from different segment lengths can be seen on Fig. \ref{f_efficient}.
+
+\section{Experiment}
+\label{c4_experiment}
 \subsection{Experimental Setup}
 We tested our method on TRECVID MED 2010 dataset. An event kit is provided with the definitions and textual descriptions for all the events for each dataset. The first dataset contains 3,468 videos, including 1,744 videos for training and 1,724 video clips for testing, containing a total of more than 110 video hours. In TRECVID MED 2010, there are 3 event classes: \textit{assembling a shelter} (E001), \textit{batting in a run} (E002), and \textit{making a cake} (E003).
 
 We adopt the popular bag-of-words model to build our event recognition framework. At first, we use dense trajectory motion feature published by Wang \cite{wang:2011:inria-00583818:1} to calculate raw motion features as local trajectory descriptors. The library to extract these features is published online by the author\footnote{http://lear.inrialpes.fr/people/wang/dense\_trajectories}. The source code is customized for pipeline processing using only Motion Boundary Histogram (MBH) descriptor to save computing time but other parameters are set to default. 
 
-In the coding step, we randomly select 1,000,000 dense trajectories for clustering to form a codebook of 4000 visual codewords. After that, the frequency histogram of the visual words is computed over each segment to generate the feature vector for that segment. Finally, we apply the sum-max pooling technique as described in Section \ref{sec:summax} to obtain the final video representation. We also adopt the soft assignment weighting scheme \cite{Jiang:2007:TOB} with 5 nearest neighbors to improve the performance of the "bag-of-words" approach.
+In the coding step, we randomly select 1,000,000 dense trajectories for clustering to form a codebook of 4000 visual codewords. After that, the frequency histogram of the visual words is computed over each segment to generate the feature vector for that segment. Finally, we apply the sum-max pooling technique as described in Section \ref{sec:summax} to obtain the final video representation. We also adopt the soft assignment weighting scheme \cite{Jiang:2007:TOB} with 5 nearest neighbors to improve the performance of the ``bag-of-words'' approach.
 
 In the learning and testing step, we use the popular Support Vector Machine (SVM) for event classification. In particular, we use the LibSVM library available online\footnote{http://www.csie.ntu.edu.tw/{\textasciitilde}cjlin/libsvm/} and adopt the one-vs.-rest scheme for multi-class classification. 
 
 \subsection{Experimental Result and Analysis}
 
 \subsubsection{On the MED 2010 dataset}
-We report the results in terms of the Mean Average Precision (MAP). Results of sum-max video pooling and max-sum video pooling are showed in Fig \ref{f_sum_max_chart} and Fig \ref{f_max_sum_chart} respectively. Sum-max pooling improves the overall performance, especially for "assembling a shelter" event. The best performance is obtained at the segment length of 60 s (same as observed in \cite{DBLP:journals/vlsisp/PhanNLTLDS14}). Max-sum video pooling did not achieve good results compared to sum-max video pooling. The reason for the low performance of max-sum pooling can be due to the lost of relevant information when max-pooling is applied first. 
+We report the results in terms of the Mean Average Precision (MAP). Results of sum-max video pooling and max-sum video pooling are showed in Fig \ref{f_sum_max_chart} and Fig \ref{f_max_sum_chart} respectively. Sum-max pooling improves the overall performance, especially for ``assembling a shelter'' event. The best performance is obtained at the segment length of 60 s (same as observed in \cite{DBLP:journals/vlsisp/PhanNLTLDS14}). Max-sum video pooling did not achieve good results compared to sum-max video pooling. The reason for the low performance of max-sum pooling can be due to the lost of relevant information when max-pooling is applied first. 
 
-We also observed that the performance largely depends on the segment length and the event itself. For example, we can get better performance with short segment lengths for the event "assembling a shelter", while the event "making a cake" tends to have better performance with longer segments. 
+We also observed that the performance largely depends on the segment length and the event itself. For example, we can get better performance with short segment lengths for the event ``assembling a shelter'', while the event ``making a cake'' tends to have better performance with longer segments. 
 
 We summarize our experimental results in Table \ref{t_med10}. The best performing feature is highlighted in bold for each event. In general, pooling over segments is more effective, i.e, sum-max pooling outperforms sum pooling and max-sum pooling outperforms max pooling. In the best case, sum-max video pooling outperforms the traditional sum pooling up to 2\% in terms of MAP.
 
@@ -105,24 +117,24 @@ We summarize our experimental results in Table \ref{t_med10}. The best performin
 	\label{t_med10}
 	\centering
 	\begin{tabular}{|c|c|c|c|c|}
-		\hline
+		\toprule
 		Event/MAP & \begin{tabular}[x]{@{}c@{}}Max\\pooling \end{tabular} & \begin{tabular}[x]{@{}c@{}}Sum\\pooling \end{tabular} & \begin{tabular}[x]{@{}c@{}}Max-sum\\pooling\\(at 60 s)\end{tabular} & \begin{tabular}[x]{@{}c@{}}Sum-max\\pooling\\(at 60 s)\end{tabular} \\
 		%\bfseries \begin{tabular}[c]{@{}c@{}} CU\\(SIFT)\end{tabular}&
 		%\bfseries \begin{tabular}[c]{@{}c@{}}CU (STIP,\\SIFT,\\MFCC)\end{tabular}\\
-		\hline
+		\midrule
 		E001&0.4365&0.4468&0.4646&\textbf{0.5072}
 		\\
-		\hline
+		\midrule
 		E002&0.6434&\textbf{0.7988}&0.7103&0.7900
 		\\
-		\hline
+		\midrule
 		E003&\textbf{0.3144}&0.3053&0.2806&0.3100
 		\\
-		\hline
+		\midrule
 		All&0.4648&0.5170&0.4852&\textbf{0.5357}
 		%&0.512&0.633
 		\\
-		\hline
+		\bottomrule
 	\end{tabular}
 \end{table}
 

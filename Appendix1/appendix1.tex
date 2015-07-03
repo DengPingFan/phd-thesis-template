@@ -1,5 +1,5 @@
 % ******************************* Thesis Appendix A ****************************
-\chapter{TRECVID MED 2013 results} 
+\chapter{TRECVID MED 2013 Results} 
 
 \ifpdf
 \graphicspath{{Appendix1/Figs/Raster/}{Appendix1/Figs/PDF/}{Appendix1/Figs/}}
@@ -18,11 +18,11 @@ In this appendix, we briefly introduce our Multimedia Event Detection system for
 \textbf{Event Classification.}
 We use the popular Support Vector Machine (SVM) for classification. All the positive videos are considered as positive samples and the remaining videos are considered as negative samples (including near miss videos). We use the chi-square kernel for training bag-of-words histogram features and linear kernel for training features encoded by Fisher vector.
 
-\textbf{Results and Conclusions.} We observed that Fisher vector representation is consistently better the traditional bag-of-words histogram representation. The motion features archived the highest performance in terms of single feature comparison, followed by image features and audio features. Furthermore, these features are highly complementary, so their combination achieved the best performance. We also observed a little performance gain when combining both Fisher vector and bag-of-words feature encoding. Based on these observations, we submitted the FullSys system based on the combination of audio or visual features. Our results (NII Team) on the 100Ex setting is shown in Fig. \ref{med2013_result}. Our rank is 4th out of 18 participants.
+\textbf{Results and Conclusion.} We observed that Fisher vector representation is consistently better the traditional bag-of-words histogram representation. The motion features archived the highest performance in terms of single feature comparison, followed by image features and audio features. Furthermore, these features are highly complementary, so their combination achieved the best performance. We also observed a little performance gain when combining both Fisher vector and bag-of-words feature encoding. Based on these observations, we submitted the FullSys system based on the combination of audio or visual features. Our results (NII Team) on the 100Ex setting is shown in Fig. \ref{med2013_result}. Our rank is 4th out of 18 participants.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{results.pdf}
-	\caption{General MED framework}
+	\includegraphics[width=1\textwidth]{results.pdf}
+	\caption{Comparison of our MED 2013 system with others on the full evaluation set for the Pre-specified task. Results are sorted in the descending order of performance on the EK100 setting.}
 	\label{med2013_result}
 \end{figure} 

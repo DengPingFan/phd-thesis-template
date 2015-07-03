@@ -13,15 +13,15 @@
 \fi
 
 \section{Motivation}
-The evolution of internet has been changing our daily life. According to a report by the Internet World Stats \cite{Internet1}, there is now more than 3 billions internet users, accounting for 40\% of the world's population. The number of internet users are increasing rapidly and also keep producing a huge amount of internet data. It is important to analyze these data because it can provide valuable information about our daily activities. Among many interesting problems that need to be investigated, recognizing event in internet videos has been drawing a lot of attention in recent years. 
+The evolution of internet has been changing our daily life. According to a report by the Internet World Stats \cite{Internet1}, there is now more than 3 billions internet users, accounting for 40\% of the world's population. The number of internet users are increasing rapidly and also keep producing a huge amount of internet data. It is important to analyze these data because it can provide valuable information about our daily activities. Among many interesting problems that need to be investigated, recognizing event in internet videos has been drawing a lot of attention in recent years \cite{natarajan2012multimodal,sun2013large,habibian2013recommendations,myers2014evaluating}. 
 
 Recognizing event refers to the process of automatically identifying video clips that contain a particular event of interest. This is a challenging problem because we need to build computer system to recognize event not only from video metadata but also from its content. The detail definition of this task and its challenges will be described in Section \ref{c1_problemdefinition} and Section \ref{c1_challenges} respectively. 
 
 Event recognition technologies are mainly employed in \index{video retrieval} video retrieval systems to facilitate the retrieving progress. A video retrieval system that equipped such technologies can have numerous applications such as video search, video recommendation and video filtering. For example, below are some application scenarios:
 
 \begin{itemize}
-	\item \textbf{Video search.}\index{video search} This is an important function in most of video sharing websites. Most of the time, these websites only provide a search interface that supports text queries. However, in order to do that, videos must have already been indexed based on its content and other metadata. Using the provided interface, user can search for a specific tutorial such as ``how to make a cake'',  ``how to repair an appliance''; or some specific entertainment videos such as "a dog show" and "doing a magic trick".
-	\item \textbf{Video recommendation.}\index{video recommendation} It is also very important for video sharing websites to recommend videos that may appeal to the user. The longer the user stay on their websites, the higher the benefit. The recommendation is often based on the user's favorite videos or recently watched videos. From these input videos, the system will search for similar videos through their database within a short time. For example, when the user watch a video of ``how to drive a car'', they may also expected to watch similar events such as ``how to park a car'' and ``common driving mistakes''.
+	\item \textbf{Video search.}\index{video search} This is an important function in most of video sharing websites. Most of the time, these websites only provide a search interface that supports text queries. However, in order to do that, videos must have already been indexed based on its content and other metadata \cite{zhang1997integrated}. Using the provided interface, user can search for a specific tutorial such as ``how to make a cake'',  ``how to repair an appliance''; or some specific entertainment videos such as ``a dog show'' and ``doing a magic trick''.
+	\item \textbf{Video recommendation.}\index{video recommendation} It is also very important for video sharing websites to recommend videos that may appeal to the user. The longer the user stay on their websites, the higher the benefit. The recommendation is often based on the user's favorite videos or recently watched videos \cite{davidson2010youtube,mei2007automatic}. From these input videos, the system will search for similar videos through their database within a short time. For example, when the user watch a video of ``how to drive a car'', they may also expected to watch similar events such as ``how to park a car'' and ``common driving mistakes''.
 	\item \textbf{Video filtering.} In contrast to video recommendation, video filtering is also an important application of event detection technologies. There are certain event that the managers do not want them to be public, especially when a government want to establish a video censorship. For example, videos that teach ``how to make a bomb'' or ``how to commit a suicide'' should be removed from the retrieval results. 
 
 	Zillmann and Weaver \cite{JASP:JASP145} show that human tend to have violent responses when watching violent movies. In this case, event detection technology can be applied to filter out violent scenes \index{violent scene detection} in a movies. This technology has been employed in Facebook platform \cite{Internet3} to prevent the spread of a particular videos from over the internet. A video footage of a policeman being shot dead in the ``Charlie Hebdo shooting'' incident was among the first posts that were restricted by Facebook \cite{Internet3}. 
@@ -41,10 +41,10 @@ Second, we are dealing with \textbf{multimedia data}. Internet videos can contai
 
 Due to the uncontrolled capturing condition of the complex videos, it is also interesting to know which parts of the video are important for recognizing event? How can we detect these parts? And suppose these parts do exist, how can we utilize them for complex event recognition? These challenging questions are also addressed in our dissertation.  
 
-\section{Challenges}
+\section{Challenge}
 \label{c1_challenges}
 \begin{itemize}
-	\item{\textbf{Large content variation.}} The large content variation refers to the diversity of a complex event. Even though an event only involve with some specific objects, activities and scenes, the variety among within these classes is also very high. For example, "birthday party" is a complex event. This event can be happen during day or night and set in indoor (a home, a restaurant) or outdoor (a backyard, a park) environment. Typically, in a birthday party, the presence of a birthday cake is of the utmost importance. However, in the real world setting, even the birthday cake can be very different from video to video. Figure \ref{c1_largecontent} shows some examples of birthday cake appear in internet videos. 
+	\item{\textbf{Large content variation.}} The large content variation refers to the diversity of a complex event. Even though an event only involve with some specific objects, activities and scenes, the variety among within these classes is also very high. For example, ``birthday party'' is a complex event. This event can be happen during day or night and set in indoor (a home, a restaurant) or outdoor (a backyard, a park) environment. Typically, in a birthday party, the presence of a birthday cake is of the utmost importance. However, in the real world setting, even the birthday cake can be very different from video to video. Figure \ref{c1_largecontent} shows some examples of birthday cake appear in internet videos. 
 	\begin{figure}
 		\centering
 		\includegraphics[width=1\textwidth]{largecontent.png}
@@ -54,7 +54,7 @@ Due to the uncontrolled capturing condition of the complex videos, it is also in
 	
 	In terms of content variation, recognizing complex event is more challenging than other tasks such as instance search \index{instance search} or copy detection \index{copy detection}. The instance search task aims to search for a certain specific person, object or location. These instances can have different views but it must belong to the same target of interest in the real world. The target of copy detection task is a little bit more flexible. It aims to detect a video segment that is derived from another video. The copy video can be derived from the original video by means of transformations such as addition, deletion and modification. To this end, the complex event detection task has the utmost content variation.
 	 
-	\item{\textbf{Uncontrolled capturing condition.}} The uncontrolled capturing condition distinguish the complex event recognition task and the traditional action recognition task, which is often recorded in studio settings. As a result, techniques that work well for action recognition might no longer be effective for detecting complex event. For example, camera motion is one of the frequent prominence in internet videos. Although popular motion features \index{motion feature} such as \nomenclature[-stip]{STIP}{ Spatial-temporal Interest Points} STIP \cite{Laptev03space-timeinterest} and \nomenclature[-hog3d]{HOG3G}{Histogram of 3D Gradients} HOG3D \cite{Klaser08BMVC} can effectively recognize action in studio videos, it shows limited performance in internet videos because it is not designed to handle camera motion. On the other hand, Dense Trajectories proposed by Wang takes into account the camera motion and demonstrates superior performance.
+	\item{\textbf{Uncontrolled capturing condition.}} The uncontrolled capturing condition distinguish the complex event recognition task and the traditional action recognition task, which is often recorded in studio settings. As a result, techniques that work well for action recognition might no longer be effective for detecting complex event. For example, camera motion is one of the most frequent prominence in internet videos. Although popular motion features \index{motion feature} such as \nomenclature[-esurf]{ESURF}{Extended } ESURF \cite{willems2008efficient}, \nomenclature[-stip]{STIP}{Spatial-temporal Interest Points} STIP \cite{Laptev03space-timeinterest} and \nomenclature[-hog3d]{HOG3G}{Histogram of 3D Gradients} HOG3D \cite{Klaser08BMVC} can effectively recognize action in studio videos, it shows limited performance in internet videos because it is not designed to handle camera motion. On the other hand, the Dense Trajectories feature proposed by Wang \cite{wang2013action} takes into account the camera motion and demonstrates superior performance.
 	 
 	One of the direct consequence of uncontrolled capturing condition is that user-generated videos often contain irrelevant information to the event of interest. In other words, different parts of the video have different levels of relatedness to a particular event. This leads to a challenging problem which is how to discard irrelevant information from the video representation. It is especially difficult when the annotation of each part of the video is almost not available. Figure \ref{c1_uncontrolled} shows some examples of noisy information in internet videos.
 	
@@ -78,16 +78,16 @@ Due to the uncontrolled capturing condition of the complex videos, it is also in
 	
 \end{itemize}
 
-\section{Contributions}
+\section{Contribution}
 
 We made following contributions:
 
 \begin{itemize}
-\item We propose using a segment-based approach to overcome the limitations of  the video-based approaches. The basic idea is to examine shorter segments instead of using the representative frames or entire video. We carry thorough experiments to verify our proposed method by investigating different strategies to decompose a video into segments. These strategies include uniform segment sampling and segments based on shot boundary detection.
+\item We propose a new \textit{feature representation} method, named segment-based representation (\textbf{SB}), to overcome the limitations of the traditional video-based approaches. The basic idea is to examine shorter segments instead of using the representative frames or entire video. We carry thorough experiments to verify our proposed method by investigating different strategies to decompose a video into segments. These strategies include uniform segment sampling and segments based on shot boundary detection.
 
-\item We propose a new video pooling strategy, called sum-max video pooling, to deal with noisy information in complex videos. This pooling technique is based on the layer structure of video. Basically, we apply sum pooling at the low layer representation while using max pooling at the high layer representation. Sum pooling is used to keep sufficient relevant features at the low layer, while max pooling is used to retrieve the most relevant features at the high layer, therefore it can discard irrelevant features in the final video representation. 
+\item We propose a new \textit{feature aggregation} method, called sum-max video pooling (\textbf{SM}), to deal with noisy information in complex videos. This pooling technique is based on the layer structure of video. Basically, we apply sum pooling at the low layer representation while using max pooling at the high layer representation. Sum pooling is used to keep sufficient relevant features at the low layer, while max pooling is used to retrieve the most relevant features at the high layer, therefore it can discard irrelevant features in the final video representation. 
 	
-\item We propose a new method, named \nomenclature[-edmil]{EDMIL}{Event-driven Multiple Instance Learning} Event-driven Multiple Instance Learning (EDMIL), to learn key evidences for complex event detection. We treat each segment as an instance and model it in a multiple instance learning framework \cite{andrews2002support}, where each video is a "bag". The instance-event similarity is quantized into different levels of relatedness. Intuitively, the most (ir)relevant instances should have higher (dis)similarities. Therefore, we propose to learn the instance labels by jointly optimizing the instance classifier and its related level.
+\item We propose a new \textit{feature learning} method, named Event-driven Multiple Instance Learning (\textbf{EDMIL}), to learn key evidences for complex event detection. We treat each segment as an instance and model it in a multiple instance learning framework \cite{andrews2002support}, where each video is a ``bag''. The instance-event similarity is quantized into different levels of relatedness. Intuitively, the most (ir)relevant instances should have higher (dis)similarities. Therefore, we propose to learn the instance labels by jointly optimizing the instance classifier and its related level.
 	
 \end{itemize}
 
@@ -97,20 +97,20 @@ We made following contributions:
 
 The remaining of this dissertation is organized as follows:
 
-Chapter \ref{chapter2} introduces some background that is related to our research. This background encompasses an introduction to TRECVID MED task and dataset. It also provide basic knowledge about some low level features and feature encoding methods, which is necessary to re-implement our system. 
+\textit{Chapter \ref{chapter2}} introduces some background that is related to our research. This background encompasses an introduction to TRECVID MED task and dataset. It also provide basic knowledge about some low level features and feature encoding methods, which is necessary to re-implement our system. 
 
-Chapter \ref{chapter3} presents our segment-based approach for complex event detection. At first we introduce the video-based approach and some of its limitation. After that we present the segment-based approach with several strategies to decompose a video into segments.
+\textit{Chapter \ref{chapter3}} presents our segment-based approach for complex event detection. At first we introduce the video-based approach and some of its limitation. After that we present the segment-based approach with several strategies to decompose a video into segments.
 
-Chapter \ref{chapter4} presents our sum-max video pooling for complex event recognition. At first we introduce the layer structure of a video. Based on this layer structure, we propose a new video pooling technique which is a combination of sum pooling and max pooling.
+\textit{Chapter \ref{chapter4}} presents our sum-max video pooling for complex event recognition. At first we introduce the layer structure of a video. Based on this layer structure, we propose a new video pooling technique which is a combination of sum pooling and max pooling.
 
-Chapter \ref{chapter5} presents our method to detect event using the evidential description of an event. We also present a method to calculate the similarity between a video segment and an event based on textual description. This method can also provide evidences for event detection.
+\textit{Chapter \ref{chapter5}} presents our method to detect event using the evidential description of an event. We also present a method to calculate the similarity between a video segment and an event based on textual description. This method can also provide evidences for event detection.
 
-Chapter \ref{chapter6} concludes this dissertation by summarizing our contributions and discussing about the future work.
+\textit{Chapter \ref{chapter6}} concludes this dissertation by summarizing our contributions and discussing about the future work.
 
 	\begin{figure}
 		\centering
 		\includegraphics[width=1\textwidth]{outline.png}
-		\caption{Outline of our thesis. Our contributions are highlighted in red boxes.}
+		\caption{Outline of our thesis. Our contributions are highlighted in the red boxes.}
 		\label{c1_outline}
 	\end{figure}
 	
