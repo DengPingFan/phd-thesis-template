@@ -1,0 +1,82 @@
+% titlepage-demo.tex
+\documentclass{beamer}
+\usetheme{Boadilla}
+\usepackage{standalone}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{booktabs}
+\newcommand{\light}[1]{\textcolor{gray}{#1}}
+
+% highlight the title of the current section
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\usepackage[absolute,overlay]{textpos} 
+\newenvironment{reference}[2]{% 
+  \begin{textblock*}{\textwidth}(#1,#2) 
+      \footnotesize\it\bgroup\color{red!50!black}}{\egroup\end{textblock*}} 
+
+% items enclosed in square brackets are optional; explanation below
+\title[]{Event Detection from Video\\
+	 Using Segment-Based Approach}
+\subtitle[]{(Final Defense)}
+\author[S. Phan]{Sang Phan}
+\institute[SOKENDAI]{
+  The Graduate University for Advanced Studies (SOKENDAI)\\
+  \texttt{plsang@nii.ac.jp}
+}
+\date[July 2015]{July 22\textsuperscript{nd}, 2015}
+
+\begin{document}
+
+%--- the titlepage frame -------------------------%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% % response to committe's requests
+\setcounter{framenumber}{0}
+\input{slides_committee}
+%\setcounter{framenumber}{1}
+
+\begin{frame}
+\frametitle{Table of Contents}
+\tableofcontents
+\end{frame}
+
+\section{Event Detection from Video}
+
+
+\input{slides_part1}
+
+
+\section{Segment-based Feature Representation}
+
+\input{slides_part2}
+
+\section{Sum-Max Video Feature Aggregation}
+
+\input{slides_part3}
+
+\section{Event-driven Multiple Instance Learning}
+
+\input{slides_part4}
+
+\section{Summary}
+
+\input{slides_part5}
+	
+
+% % appendix slides
+\newcounter{finalframe}
+\setcounter{finalframe}{\value{framenumber}}
+
+\input{slides_bonus}
+
+\setcounter{framenumber}{\value{finalframe}}
+\end{document}

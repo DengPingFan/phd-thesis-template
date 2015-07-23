@@ -1,0 +1,44 @@
+% titlepage-demo.tex
+\documentclass{beamer}
+\usetheme{Boadilla}
+\usepackage{multirow}
+\usepackage[absolute,overlay]{textpos} 
+\newenvironment{reference}[2]{% 
+  \begin{textblock*}{\textwidth}(#1,#2) 
+      \footnotesize\it\bgroup\color{red!50!black}}{\egroup\end{textblock*}} 
+
+
+
+\begin{document}
+	
+\begin{frame}{Response to Committee's Requests} 	
+	\begin{enumerate}
+		\item Modify the thesis title.
+		\\
+		$\rightarrow$ Done. 
+		\begin{itemize}
+			\item \scriptsize{Old title: Multimedia Event Detection Using Segment-Based Approach.}
+			\item New title: Event Detection from Video Using Segment-Based Approach.
+		\end{itemize}
+		\item Modify chapter titles.
+		\\
+		$\rightarrow$ Done.
+		\begin{itemize}
+			\item \scriptsize{Chapter 3: Event Detection Using Segment-based \textbf{Feature Representation}.}
+			\item Chapter 4: Event Detection Using Sum-max \textbf{Feature Aggregation}.
+			\item Chapter 5: Event Detection Using Event-Driven Multiple Instance \textbf{Learning}.
+		\end{itemize}	
+		\item Modify the story to cover three contributions.
+		\\
+		$\rightarrow$ Done (modified in the abstract).
+		\item Which challenges are solved by which methods?
+		\\
+		$\rightarrow$ Done (added in Chapter 6).
+		\item Try dynamic pooling (optional).
+		\\
+		$\rightarrow$ Not yet.
+	\end{enumerate}
+\end{frame}	
+
+
+\end{document}
