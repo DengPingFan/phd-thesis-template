@@ -12,7 +12,7 @@
     \graphicspath{{Chapter1/Figs/Vector/}{Chapter1/Figs/}}
 \fi
 
-\section{Motivation}
+\section{Motivations}
 The evolution of internet has been changing our daily life. According to a report by the Internet World Stats \cite{Internet1}, there is now more than 3 billions internet users, accounting for 40\% of the world's population. The number of internet users are increasing rapidly and also keep producing a huge amount of internet data. It is important to analyze these data because it can provide valuable information about our daily activities. Among many interesting problems that need to be investigated, recognizing event in internet videos has been drawing a lot of attention in recent years \cite{natarajan2012multimodal,sun2013large,habibian2013recommendations,myers2014evaluating}. 
 
 Recognizing event refers to the process of automatically identifying video clips that contain a particular event of interest. This is a challenging problem because we need to build computer system to recognize event not only from video metadata but also from its content. The detail definition of this task and its challenges will be described in Section \ref{c1_problemdefinition} and Section \ref{c1_challenges} respectively. 
@@ -24,24 +24,65 @@ Event recognition technologies are mainly employed in \index{video retrieval} vi
 	\item \textbf{Video recommendation.}\index{video recommendation} It is also very important for video sharing websites to recommend videos that may appeal to the user. The longer the user stay on their websites, the higher the benefit. The recommendation is often based on the user's favorite videos or recently watched videos \cite{davidson2010youtube,mei2007automatic}. From these input videos, the system will search for similar videos through their database within a short time. For example, when the user watch a video of ``how to drive a car'', they may also expected to watch similar events such as ``how to park a car'' and ``common driving mistakes''.
 	\item \textbf{Video filtering.} In contrast to video recommendation, video filtering is also an important application of event detection technologies. There are certain event that the managers do not want them to be public, especially when a government want to establish a video censorship. For example, videos that teach ``how to make a bomb'' or ``how to commit a suicide'' should be removed from the retrieval results. 
 
-	Zillmann and Weaver \cite{JASP:JASP145} show that human tend to have violent responses when watching violent movies. In this case, event detection technology can be applied to filter out violent scenes \index{violent scene detection} in a movies. This technology has been employed in Facebook platform \cite{Internet3} to prevent the spread of a particular videos from over the internet. A video footage of a policeman being shot dead in the ``Charlie Hebdo shooting'' incident was among the first posts that were restricted by Facebook \cite{Internet3}. 
+	Zillmann and Weaver \cite{JASP:JASP145} show that human tend to have violent responses when watching violent movies. In this case, event detection technology can be applied to filter out violent scenes \index{violent scene detection} in a movies. This technology has been employed in Facebook platform \cite{Internet3} to prevent the spread of a particular video over the internet, or to restrict the video from a particular type of audiences such as children, as shown in Fig. \ref{c1_facebook}. 
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=1\textwidth]{facebook.png}
+		\caption{Facebook has been placing warnings over violent videos posted to its site.}
+		\label{c1_facebook}
+	\end{figure}
 	
 \end{itemize}
 
 Motivated by these interesting applications, this dissertation aims to develop technologies for building an automatic event detection system. We will describe more about our research scope in the next section.
 
-\section{Problem}
+\section{Problem Statement}
 \label{c1_problemdefinition}
 This dissertation addresses the problem of recognizing complex event in videos. Basically, it is the process of automatically identifying video clips that contain a particular event of interest. There are two important characteristics of our target problem. 
 
-First, we are dealing with \textbf{complex event}. A complex event consists of various human activities and occurs in some particular settings. For example, ``changing a vehicle tire'' is an complex event that often happens at a garage or on street. This event contains several activities such as removing hubcap, turning lugwrench, unscrewing bolts and pulling rim out of tire. Complex event recognition differs from the traditional action recognition \index{action recognition} task in that it is the combination of multiple human actions or activities. It often contains various interactions between human and objects in different scenes. Therefore, a complex event video is often longer than a single action video. Moreover, action videos are often captured in controlled environment, while complex event videos are often recorded by internet users, which is uncontrolled or arbitrary environment. 
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{eventdetection.pdf}
+	\caption{Overview of an event detection from video system.}
+	\label{c1_eventdetection}
+\end{figure}
+
+First, we are dealing with \textbf{complex event}. A complex event consists of various human activities and occurs in some particular settings. For example, ``changing a vehicle tire'' is an complex event that often happens at a garage or on street. This event contains several activities such as removing hubcap, turning lugwrench, unscrewing bolts and pulling rim out of tire. Complex event recognition differs from the traditional action recognition \index{action recognition} task in that it is the combination of multiple human actions or activities. It often contains various interactions between human and objects in different scenes. Therefore, a complex event video is often longer than a single action video. Moreover, action videos are often captured in controlled environment, while complex event videos are often recorded by internet users, which is uncontrolled or arbitrary environment. Figure \ref{c1_comparision} shows the difference of complex event and single action detection. The top images are sequence of actions that happens in a shoplifting event, while the bottom images are examples of single action in the classic KTH dataset. Note that for the shoplifting event, the sequence of actions needed to be recorded in exactly the order from left to right. That means we not only deal with multiple actions, but also need to take into account the order that these actions happen.
+
+\begin{figure}
+	\centering
+	\begin{minipage}{.3\textwidth}
+		\centering
+		\includegraphics[width=1\linewidth]{shoplifting1.jpg}
+		\\
+	Pick up an item
+	\end{minipage}%
+	\begin{minipage}{.3\textwidth}
+		\centering
+		\includegraphics[width=1\linewidth]{shoplifting2.jpg}
+		\\
+	Keep it in a hidden place
+		\end{minipage}
+	\begin{minipage}{.3\textwidth}
+		\centering
+		\includegraphics[width=1\linewidth]{shoplifting3.jpg}
+		\\
+		Get out successfully
+	\end{minipage}
+		
+	\centering
+	\includegraphics[width=1\textwidth]{kth.png}
+	\caption{Top: sequence of actions in the shoplifting event. Bottom: Examples of single action detection in KTH dataset.}
+	\label{c1_comparision}
+\end{figure}
 
 % % mentioned about CBVR 
 Second, we are dealing with \textbf{multimedia data}. Internet videos can contain information from various mediums such as audio, visual and textual. Beside information from its content, internet videos often come with user-provided metadata description such as titles, tags and descriptions. Traditionally, videos are indexed and retrieved based on this metadata information. However, text-based video retrieval systems face an intrinsic limitation that is the semantic gap \index{semantic gap} between the content of the video and the information provided by the users. Moreover, this information is tend to be noisy and not always reliable. Therefore, we focus on utilizing multimedia data to build an effective event recognition system.
 
 Due to the uncontrolled capturing condition of the complex videos, it is also interesting to know which parts of the video are important for recognizing event? How can we detect these parts? And suppose these parts do exist, how can we utilize them for complex event recognition? These challenging questions are also addressed in our dissertation.  
 
-\section{Challenge}
+\section{Challenges}
 \label{c1_challenges}
 \begin{itemize}
 	\item{\textbf{Large content variation.}} The large content variation refers to the diversity of a complex event. Even though an event only involve with some specific objects, activities and scenes, the variety among within these classes is also very high. For example, ``birthday party'' is a complex event. This event can be happen during day or night and set in indoor (a home, a restaurant) or outdoor (a backyard, a park) environment. Typically, in a birthday party, the presence of a birthday cake is of the utmost importance. However, in the real world setting, even the birthday cake can be very different from video to video. Figure \ref{c1_largecontent} shows some examples of birthday cake appear in internet videos. 
@@ -54,7 +95,7 @@ Due to the uncontrolled capturing condition of the complex videos, it is also in
 	
 	In terms of content variation, recognizing complex event is more challenging than other tasks such as instance search \index{instance search} or copy detection \index{copy detection}. The instance search task aims to search for a certain specific person, object or location. These instances can have different views but it must belong to the same target of interest in the real world. The target of copy detection task is a little bit more flexible. It aims to detect a video segment that is derived from another video. The copy video can be derived from the original video by means of transformations such as addition, deletion and modification. To this end, the complex event detection task has the utmost content variation.
 	 
-	\item{\textbf{Uncontrolled capturing condition.}} The uncontrolled capturing condition distinguish the complex event recognition task and the traditional action recognition task, which is often recorded in studio settings. As a result, techniques that work well for action recognition might no longer be effective for detecting complex event. For example, camera motion is one of the most frequent prominence in internet videos. Although popular motion features \index{motion feature} such as \nomenclature[-esurf]{ESURF}{Extended } ESURF \cite{willems2008efficient}, \nomenclature[-stip]{STIP}{Spatial-temporal Interest Points} STIP \cite{Laptev03space-timeinterest} and \nomenclature[-hog3d]{HOG3G}{Histogram of 3D Gradients} HOG3D \cite{Klaser08BMVC} can effectively recognize action in studio videos, it shows limited performance in internet videos because it is not designed to handle camera motion. On the other hand, the Dense Trajectories feature proposed by Wang \cite{wang2013action} takes into account the camera motion and demonstrates superior performance.
+	\item{\textbf{Uncontrolled capturing condition.}} The uncontrolled capturing condition distinguish the complex event recognition task and the traditional action recognition task, which is often recorded in studio settings. As a result, techniques that work well for action recognition might no longer be effective for detecting complex event. For example, camera motion is one of the most frequent prominence in internet videos. Although popular motion features \index{motion feature} such as \nomenclature[-esurf]{ESURF}{Extended Speeded Up Robust Features} ESURF \cite{willems2008efficient}, \nomenclature[-stip]{STIP}{Spatial-temporal Interest Points} STIP \cite{Laptev03space-timeinterest} and \nomenclature[-hog3d]{HOG3G}{Histogram of 3D Gradients} HOG3D \cite{Klaser08BMVC} can effectively recognize action in studio videos, it shows limited performance in internet videos because it is not designed to handle camera motion. On the other hand, the Dense Trajectories feature proposed by Wang \cite{wang2013action} takes into account the camera motion and demonstrates superior performance.
 	 
 	One of the direct consequence of uncontrolled capturing condition is that user-generated videos often contain irrelevant information to the event of interest. In other words, different parts of the video have different levels of relatedness to a particular event. This leads to a challenging problem which is how to discard irrelevant information from the video representation. It is especially difficult when the annotation of each part of the video is almost not available. Figure \ref{c1_uncontrolled} shows some examples of noisy information in internet videos.
 	
@@ -74,13 +115,13 @@ Due to the uncontrolled capturing condition of the complex videos, it is also in
 		\label{c1_nearmiss}
 	\end{figure}
 		
-	\item{\textbf{Large scale video database.}} Last but not least, we have to deal with big data as well. We have to accurately search for a particular event through a large video archive in a reasonable amount of time. In some complex event detection task such as \nomenclature[-trecvid]{TRECVID}{TREC Video Retrieval Evaluation} TRECVID Multimedia Event Detection (MED) \nomenclature[-med]{MED}{Multimedia Event Detection}, the evaluation time is also limited, which forces the participants to care about the efficiency of their systems.
+	\item{\textbf{Large scale video database.}} Last but not least, we have to deal with big data as well. We have to accurately search for a particular event through a large video archive in a reasonable amount of time. In some complex event detection task such as \nomenclature[-trecvid]{TRECVID}{TREC Video Retrieval Evaluation} TRECVID Multimedia Event Detection (MED) \nomenclature[-med]{MED}{Multimedia Event Detection}\cite{over2014trecvid}, the evaluation time is also limited, which forces the participants to care about the efficiency of their systems. In this contest, the participants need to prepare their system that is able to search for event on large collection of around 200,000 Internet videos, or 8,000 hours of videos \cite{over2014trecvid}.
 	
 \end{itemize}
 
-\section{Contribution}
+\section{Contributions}
 
-We made following contributions:
+The main challenge that is addressed in this dissertation is "uncontrolled capturing condition". This challenge differentiates complex videos from artificial or studio setting videos. The straightforward approach to handle this challenge is to decompose the original video into small video segments and search for event evidences in these small segments. By following this research direction, we made three main contributions in our dissertation:
 
 \begin{itemize}
 \item We propose a new \textit{feature representation} method, named segment-based representation (\textbf{SB}), to overcome the limitations of the traditional video-based approaches. The basic idea is to examine shorter segments instead of using the representative frames or entire video. We carry thorough experiments to verify our proposed method by investigating different strategies to decompose a video into segments. These strategies include uniform segment sampling and segments based on shot boundary detection.

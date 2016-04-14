@@ -118,21 +118,115 @@ Since MED 2014, the evaluation set has been doubled by adding around 100,000 tes
 
 \section{Feature for Event Detection}
 \label{c2_sec_med_feature}
-\subsection{Image Feature}
-For local features, we use the popular SIFT\cite{Lowe:2004} with both Hessian-Laplace interest points \cite{mikolajczyk2002affine} and dense sampling \cite{nowak2006sampling}. In both strategies, local features are extracted from multiple scales by using the Gaussian scale space \cite{mikolajczyk2002affine}. In the case of dense sampling, the key points are densely sampled on a grid with a step size of 6 pixels (dense6mul). Once a key point is detected, it is described using the standard SIFT \cite{Lowe:2004}. It is also acknowledged that other descriptors such as RGB-SIFT, Opponent-SIFT, and C-SIFT \cite{burghouts2009performance} can be complementary with the standard SIFT descriptor \cite{yu2014informedia}.
+\subsection{Image Features}
 
-\subsection{Motion Feature}
-As shown by Wang et al. \cite{wang2013action}, the dense trajectory feature is one of the best for action classification. In particular, it is an efficient way to remove camera motion. Violent scenes of Hollywood movies tend to have a lot of action and different effects. We use the dense trajectory feature to capture this information. Trajectories are obtained by tracking densely sampled points in the optical flow fields. As suggested by Wang \cite{wang2013action}, we use Histogram of Oriented Gradient (HOG), Histogram of Optical Flow (HOF) and Motion Boundary Histogram (MBH) to describe each trajectory. HOG captures the appearance of a moving object, whereas HOF captures its speed. The last descriptor, MBH, captures the boundaries of motion and is good for handling camera motion.
+Image features or still image features can be further classified into global and local features. Global features represent information of the whole frame (or image) while local features focus on some local invariant characteristics.
+
+The most common global feature is color histogram, which is a representation of the distribution of colors in an image. Color histograms can potentially be identical for two images with different object content which happens to share color information. Another popular global feature is GIST \cite{oliva2001modeling}. GIST descriptor describes the dominant spatial structure of a scene in a low dimensional representation.
+
+For local image features, Scale-Invariant Feature Transform (SIFT) has become a standard feature for many image classification tasks. It is proposed by Lowe in \cite{Lowe:2004} to find local maximum of Difference of Gaussians (an approximation of Laplacian of Gaussian) in space and scale. It is a scale invariant local feature, simple and efficient. Other variants of SIFT take into account the keypoint extraction methods, such as Hessian-Laplace interest points detector \cite{mikolajczyk2002affine} and dense sampling \cite{nowak2006sampling}. In both strategies, local features are extracted from multiple scales by using the Gaussian scale space \cite{mikolajczyk2002affine}. In the case of dense sampling, the key points are densely sampled on a grid with a step size of 6 pixels. Once a key point is detected, it is described using the standard SIFT \cite{Lowe:2004}. It is also acknowledged that other descriptors such as RGB-SIFT, Opponent-SIFT, and C-SIFT \cite{burghouts2009performance} can be complementary with the standard SIFT descriptor \cite{yu2014informedia}.
+
+\subsection{Motion Features}
+Motion features have been widely developed for various action recognition tasks. Because event video may contain multiple actions, it is reasonable to employ motion information for event detection. Depend on the extraction methods, motion features can be classified into two categories: methods based on interest points and methods based on tracking. 
+
+
+\textbf{Methods based on interest points}. The Harris3D detector was proposed by Laptev and Linderberg~\cite{Laptev03space-timeinterest}. This is an extension of Harris2D detector which is used to detect corners in image. Generally the proposed detector will detect points which have significant change in both spatial and temporal direction. First, the spatial temporal second-moment matrix averaged using a Gaussian weighting function \textit{g} at spatial scale $\sigma_{i}$ and temporal scale $\tau_{i}$ is defined as below:
+
+\begin{equation}
+	\mu = g(.; \sigma_{i}^{2},\tau_{i}^{2},)* \left( \begin{array}{ccc}L_{x}^{2} & L_{x}L_{y} & L_{x}L_{t} 
+		\\L_{x}L_{y} & L_{y}^{2} & L_{y}L_{t} \\ L_{x}L_{t} & L_{y}L_{t} & L_{t}^{2}\end{array} \right)
+\end{equation}
+
+Second, a new response function is proposed to measure the motion in 3D:
+
+\begin{equation}
+	H = \mbox{det}(\mu) + k\, \mbox{trace}^{3}(\mu),
+\end{equation}
+
+Finally, interest points are those which maximize the response function H. To do this, the authors use a corresponding eigenvalue problem. The response function H can be rewrote as below:
+
+\begin{equation}
+	H = \lambda_{1}\lambda_{2}\lambda_{3} - k\, (\lambda_{1}+\lambda_{2}+\lambda_{3})^{3}
+\end{equation}
+
+Interest points are those have large eigenvalue $\lambda_{1},\lambda_{2},\lambda_{3}$ which means large variation in both spatial and temporal domain.
+
+
+The Cuboid detector is based on temporal Gabor filters and was proposed by Dollár et al. in~\cite{Dollar05VSPETS}. The response function has the form:
+
+\begin{equation}
+	R = (I*g*h_{ev})^{2}+(I*g*h_{od})^{2}
+\end{equation}
+where g(x,y;$\sigma$) is the 2D spatial Gaussian smoothing kernel, and $h_{ev}$ and $h_{od}$ are a quadrature pair of 1D Gabor filters which are applied temporally.
+The Gabor filters are defined by:
+\begin{equation}
+	h_{ev}(t;\tau,\omega) = -cos(2\pi t\omega)e^{\frac{-t^{2}}{\tau^{2}}}
+\end{equation}
+\begin{equation}
+	h_{od}(t;\tau,\omega) = -sin(2\pi t\omega)e^{\frac{-t^{2}}{\tau^{2}}}
+\end{equation}
+with $\omega$=4/$\tau$. The two parameters $\sigma$ and $\tau$ of the response function R correspond roughly to the spatial and temporal scale of the detector. Interest points are the local maxima of the response function R.
+
+The Hessian detector was proposed by Willems et al.~\cite{willems2008efficient} as a spatio-temporal extension of the Hessian saliency measure used for blob detection in images. The detector measures the saliency with the determinant of the 3D Hessian matrix. The position and scale of the interest points are simultaneously localized without any iterative procedure. In order to speed up the detector, the authors used approximative box-filter operations on an integral video structure. Each octave is divided into 5 scales, with a ratio between subsequent scales in the range 1.2 -- 1.5 for the inner 3 scales. The determinant of the Hessian is computed over several octaves of both the spatial and temporal scales. A non-maximum suppression algorithm selects joint extrema over space, time and scales: (x, y, t, $\sigma$, $\tau$).
+	
+
+\textbf{Methods based on tracking}. Methods based on tracking process the video frame by frame. Trajectories are often extracted after tracking for fixed number of frame length. Different features may different in both the extraction and description method. There are several methods to extract trajectories. In~\cite{Matikainen09ICCV}, a standard Kanade–Lucas–Tomasi (KLT) tracker is used to track features (using "good features to track") over a video. A fixed number of features (typically 100) is initialized for tracking. Features are replaced as necessary when tracks are lost. The output of this tracking is a trace of (x; y) pairs for each feature.
+
+In~\cite{Yuan12PR}, trajectories are generated by tracking dense SIFT points frame by frame. The reason for using dense sampling, according to the author, is to provide sufficient points to group similar motions into meaningful body parts. First, points are sampled on a regular grid spacing with 5 pixels, then each image patch is represented by a SIFT descriptor. The correspondence between key-points in successive frames is established by nearest neighbor distance ratio matching.
+
+Trajectories can also be tracked using dense optical flow. This method proposed by Wang in~\cite{wang:2011:inria-00583818:1,wang2013action}. The trajectories are obtained by tracking densely sampled points using optical flow fields. First, feature points are sampled on a grid spaced by 5 pixels and at multiple scales spaced by a factor of 1/$\sqrt{2}$. Then features are tracked in each scale separately. Each point $P_{t} = (x_{t}, y_{t})$ at frame \textit{t} is tracked to the next frame \textit{t+1} by median filtering in a dense optical flow field $\omega$ = ($u_{t}$, $v_{t}$).
+
+Tracking using KLT can be difficult for initialization step, particularly when the scene contains distracting objects. Moreover, sparse tracking methods like KLT might not capture enough information of a moving object. That is why the dense trajectory approach~\cite{wang:2011:inria-00583818:1} yields better result than sparse trajectory extraction approach. However, tracking object is still challenging in real world environment, where occlusion between moving objects are popular. In that case, the tracker output tends to be noisy. On another hand, matching dense SIFT descriptors is computationally very expensive~\cite{LiuCe09CVPR} and, thus, infeasible for large video datasets. 
+
+\textbf{Trajectory descriptors}. The trajectory descriptors are computed within a space-time volume around the trajectory (see Fig.~\ref{densetrack_descriptor}). The size of the volume is NxN pixels and L frames. To embed structure information in the representation, the volume is subdivided into a spatio-temporal grid of size $n_{\sigma}$ x $n_{\sigma}$ x $n_{\tau}$. The default parameters for our experiments are N = 32, $n_{\sigma}$ = 2, $n_{\tau}$ = 3.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{densetrack_descriptor.jpg}
+	\caption{Illustration of dense trajectory description. Left: Feature points are sampled densely for multiple spatial scales. Middle: Tracking is performed in the corresponding spatial scale over L frames. Right: Trajectory descriptors are based on its shape represented by relative point coordinates as well as appearance and motion information over a local neighborhood of N x N pixels along the trajectory. In order to capture the structure information, the trajectory neighborhood is divided into a spatio-temporal grid of size $n_{\sigma}$ x $n_{\sigma}$ x $n_{\tau}$ \cite{wang:2011:inria-00583818:1}.}
+	\label{densetrack_descriptor}
+\end{figure}
+
+The HOGHOF~\cite{Laptev03space-timeinterest} descriptor has shown excellent results on a variety of datasets. HOG (histograms of oriented gradients) focuses on static appearance information, whereas HOF (histograms of optical flow) captures the local motion information. HOGHOF descriptors are computed along the dense trajectories (see Fig.~\ref{densetrack_descriptor}). For both HOG and HOF, orientations are quantized into 8 bins using full orientations, with an additional zero bin for HOF (i.e., in total 9 bins). Both descriptors are normalized with their $L_{2}$ norm.
+
+The MBH descriptor is proposed by Dalal et al.~\cite{Dalal06ECCV} for human detection, where derivatives are computed separately
+for the horizontal and vertical components of the optical flow. This descriptor encodes the relative motion between pixels (See Fig. ~\ref{mbh_descriptor}).
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{mbh_descriptor.jpg}
+	\caption{Illustration of the MBH descriptor. (a,b) Reference images at time t and t+1. (c,d) Computed optical flow, and flow magnitude showing motion boundaries. (e,f) Gradient magnitude of flow field $I_{x}$, $I_{y}$ for image pair (a,b). (g,h) Average MBH descriptor over all training images for flow field $I_{x}$, $I_{y}$ \cite{Dalal06ECCV}. }
+	\label{mbh_descriptor}
+\end{figure}
+
+The MBH descriptor separates the optical flow field $I_{\omega}$ = ($I_{x}$, $I_{y}$) into its x and y component. Spatial derivatives are computed for each of them and orientation information is quantized into histograms, similarly to the HOG descriptor (have 8-bin histogram for each component). Finally, these two histograms are normalized separately with the $L_{2}$ norm. Since MBH represents the gradient of the optical flow, constant motion information is suppressed and only information about changes in the flow field (i.e., motion boundaries) is kept. This is a simple way to eliminate noise due to background motion. This descriptor yields excellent results when combined with dense trajectory features.
+
+As shown by Wang et al. \cite{wang:2011:inria-00583818:1,wang2013action}, the dense trajectory feature is one of the best for action classification. In particular, it is an efficient way to remove camera motion. Violent scenes of Hollywood movies tend to have a lot of action and different effects. We use the dense trajectory feature to capture this information. Trajectories are obtained by tracking densely sampled points in the optical flow fields. As suggested by Wang \cite{wang:2011:inria-00583818:1,wang2013action}, we use Histogram of Oriented Gradient (HOG), Histogram of Optical Flow (HOF) and Motion Boundary Histogram (MBH) to describe each trajectory. HOG captures the appearance of a moving object, whereas HOF captures its speed. The last descriptor, MBH, captures the boundaries of motion and is good for handling camera motion.
 
 \nomenclature[-hog]{HOG}{Histogram of Oriented Gradient}
 \nomenclature[-hof]{HOF}{Histogram of Optical Flow}
 \nomenclature[-mbh]{MBH}{Motion Boundary Histogram}
 \nomenclature[-mfcc]{MFCC}{Mel-frequency Cepstral Coeffcients}
+\nomenclature[-klt]{KLT}{Kanade–Lucas–Tomasi}
+\nomenclature[-cnn]{CNN}{Convolutional Neural Network}
 
-\subsection{Audio Feature}
+\subsection{Audio Features}
 We use the popular Mel-frequency Cepstral Coeffcients (MFCC) \cite{rabiner2007introduction} for extracting audio features. We set the window to 25 ms and the step size to 10 ms. 13-dimensional MFCC vectors along with their first and second derivatives are used for representing each audio segment. Raw MFCC features are also encoded using BoW. Note that this configuration was used by the winning teams (AXES/LEAR) of the TRECVID Multimedia Event Detection 2013 \cite{aly2013axes} and THUMOS Challenge 2014 \cite{oneata2014lear}.
 
 We investigated several ways to extract MFCC features from audio channel. These MFCC libraries are used in our evaluation: VoiceBox audio toolkit \cite{voicebox}, Yaafe audio library \cite{mathieu2010yaafe} and the RASTA-PLP library \cite{Ellis05-rastamat}. We found that the RASTA-PLP implementation achieved slightly better performance than others. Moreover, we did not observe significant improvement when changing parameters such as window length and step between successive windows. So we kept using the default setting in the RASTA-PLP implementation.
+
+\subsection{Deep Learning Features}
+Deep learning has been drawing a lot of attention after the seminal work of Krizhevsky et al. \cite{krizhevsky2012imagenet}. They proposed a deep learning framework that significantly outperforms previous state-of-the-art methods on the ImageNet benchmark \cite{deng2009imagenet}. This is a variant of multilayer perceptrons (MLP) \cite{rumelhart1985learning}, where a larger number of layers can be incorporated into the network (Fig. \ref{c2_deeplearning}). The success of deep learning is due to the explosion of big data, Convolutional Neural Network (CNN) \cite{lecun1995convolutional,lecun1998gradient}, as well as major improvements for training the network \cite{hinton2006fast,bengio2007greedy}.
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{deeplearning.png}
+	\caption{Illustration of deep learning architecture that was used in \cite{krizhevsky2012imagenet}.}
+	\label{c2_deeplearning}
+\end{figure}
+
+There are basically three ways to apply deep learning for event detection from video. (1)
+Using pre-trained deep models to extract video features \cite{tran2014c3d}. Note that if the model was trained on image collection \cite{krizhevsky2012imagenet,chatfield2014return,simonyan2014very,zhou2014learning}, it can be used to extract image features for each sample video frames. Video level features can be obtained by aggregating from all of its keyframe-based featrues. (2) The second approach is to train a deep learning model directly on event video collection. As a result, we can have an end-to-end network for the event detection. However, deep learning techniques for video is still not matured, and training a deep model with a limited number of positive labels might be not effective. (3) The third method is fine-tuning for event detection data on top a pre-trained model. This is the most common approach when applying deep learning to a new application. However, this approach requires the pre-trained model should be trained on a dataset that is similar to video event collection, otherwise, deep learning might not be applicable.
+ 
+In this dissertation, we used the popular DeepCaffe \cite{jia2014caffe} framework to extract keyframe features. We used the pre-trained deep model provided by DeepCaffe. This model was trained on ImageNet 1,000 concepts \cite{deng2009imagenet}. The protocol for training it is described in \cite{jia2014caffe}. As suggested in \cite{krizhevsky2012imagenet}, we selected the last three fully connected layers for the feature representation. The third and second-to-last layers have 4,096 dimensions, while the last layer has 1,000 dimensions corresponding to the 1,000 concept categories in the ImageNet dataset. 
 
 \section{General Framework}
 
@@ -186,7 +280,9 @@ In our experiment, we set the number of Gaussians in the GMM model to K = 256. T
 
 \subsection{Learning}
 
-LibSVM \cite{chang2011libsvm} is used for training and testing. For features encoded using the ``bag-of-words'' model, we use the $\chi^2$ kernel to calculate the distance matrix. The optimal (C;g) parameters for learning SVM classifiers are found by conducting a grid search with five-fold cross validation on the original dataset. For features that are encoded with the Fisher vector, we use LibSVM with a linear kernel. In this case, we perform a five-fold cross-validation to obtain the learning parameter C.
+Support Vector Machine (SVM) is a standard machine learning algorithm for image and action recognition tasks. Therefore, we also use it in our experiments. To this end, we use the LibSVM \cite{chang2011libsvm} for training and testing. Because we often deal with event collection with more than two events, we simply adopt the one-vs.-rest scheme to solve the multi-class classification problem. 
+
+For features encoded using the ``bag-of-words'' model, we use the $\chi^2$ kernel to calculate the distance matrix. The optimal (C;g) parameters for learning Support Vector Machine (SVM) classifiers are found by conducting a grid search with five-fold cross validation on the original dataset. For features that are encoded with the Fisher vector, we use LibSVM with linear kernel. In this case, we perform a five-fold cross-validation to obtain the learning parameter C.
 
 \subsection{Fusion Scheme}
-Fusing information from different media seems to be a natural way to handle multimedia content. Fusing multi-modal information has been used for multimedia event detection, video search, etc. The different types of multimedia data have their own characteristics, so it is also natural that they would have different fusion strategies. Here, we chose to use late fusion with an average weighting scheme for all features \cite{snoek2005early}.
+Fusing information from different media seems to be a natural way to handle multimedia content. Fusing multi-modal information has been used for multimedia event detection in recent works such as \cite{natarajan2012multimodal,lan2012double,myers2014evaluating,oh2014multimedia}. The different types of multimedia data have their own characteristics, so it is also natural that they would have different fusion strategies \cite{xu2013feature}. Here, we chose to use late fusion with an average weighting scheme for all features \cite{snoek2005early}. This simple fusion strategy has demonstrated stable performance across many event detection collections as well as different set of features.

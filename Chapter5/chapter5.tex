@@ -40,7 +40,8 @@ The remaining of this chapter is organized as follows. In the next section, we p
 \index{instance-event similarity}
 
 \section{Instance-Event Similarity}
-In order to calculate the similarity between an instance and an event, we adopt a concept expansion strategy as in \cite{chen2014event}. Our method is similar in spirit, however, we apply at instance level which is more accurate. The outline of our method is illustrated in Fig. \ref{figure_2} and it consists of four steps.
+\label{instance_event_similarity}
+In order to calculate the similarity between an instance and an event, we adopt a concept expansion strategy as in \cite{chen2014event}. Our method is similar in spirit, however, we apply at instance level which is more accurate. The outline of our method is illustrated in Fig. \ref{c5_figure_2} and it consists of four steps.
 
 \textbf{Step 1: Concept detection.} We use the concept collection that proposed in \cite{zhou2014learning} to cover a wide range of concept that can appear in realistic videos. This collection contains C = 1183 categories including 205 scene categories from the Places Database\cite{zhou2014learning} and 978 object categories from the ImageNet 2012\cite{deng2009imagenet}. The concept detection part is done by using the provided pre-trained model\footnote{http://places.csail.mit.edu}. To detect concept for the whole segment, we detect concept at sample frames and make the average aggregation. \index{concept detection} \index{imagenet} \index{places database}
 
@@ -57,7 +58,7 @@ S_{i}^{e}=\frac{\sum_{c=1}^{C}s_{c}^{e}x_{c}}{\sqrt{\sum_{c=1}^{C}(s_{c}^{e})^{2
 	\centering
 	\includegraphics[width=1\textwidth]{figure_2.pdf}
 	\caption{Outline of our method to calculate the instance-event similarity. Note that the concept expansion technique can bridge concept ``ski'' in the instance segment to the evidential description.}
-	\label{figure_2}
+	\label{c5_figure_2}
 \end{figure}
 
 
